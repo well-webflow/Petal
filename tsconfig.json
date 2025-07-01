@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "target": "es2016",
+    "module": "ESNext",
+    "checkJs": true,
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "package/dist",
+    "baseUrl": "./src",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "types": ["jquery"]
+  },
+  "files": [
+    "node_modules/gsap/types/index.d.ts",
+  ],
+  "include": ["src/**/*", "src/**/*.tsx", "src/types/**/*.d.ts"],
+  "exclude": ["node_modules"]
+}
