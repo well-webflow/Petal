@@ -40,4 +40,19 @@ module.exports = {
             APP_VERSION: JSON.stringify(require('./package.json').version),
         }),
     ],
+    devServer: {
+        static: [
+            {
+                directory: path.join(__dirname, 'demo'),
+            },
+            {
+                directory: path.join(__dirname, 'dist'),
+            }
+        ],
+        compress: true,
+        port: 8080,
+        hot: true,
+        open: true,
+        watchFiles: ['src/**/*.ts', 'demo/**/*'],
+    },
 };

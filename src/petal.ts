@@ -1,95 +1,70 @@
-import gsap from "gsap";
-import { animateMaskClosed, animateMaskOpen, getAnimationNew } from "./animation";
+import { findPopupElement, forEachPetalTrigger, getAllPetalElementsOfType, getAllPopups } from "./lib/helpers";
+import { animateMaskOpen, getAnimation, animateMaskClosed } from "./animation";
+import { ATTR_PETAL_CLOSE, ATTR_PETAL_OPEN, PetalElements } from "./lib/elements";
+import { ATTR_PETAL_MASK_OPACITY } from "./lib/attributes";
 import { pauseVideo } from "./video";
 
-// Error types for debug logging
-export type ErrorType = "NO_NAME" | "NO_TRIGGER" | "NO_POPUP" | "NO_MASK" | "NO_SLOT";
+export function initializeAllPopups(): void {
+  const popups = getAllPopups();
 
-// Initialize popup triggers
-document.querySelectorAll("[petal-el='trigger'], [petal-el='mask']").forEach((trigger) => {
-  const popupName = trigger.getAttribute("petal");
-  if (!popupName) {
-    logError("NO_NAME", "", trigger);
-    return;
-  }
+  popups.forEach((popup) => {
+    const mask = findPopupElement(popup, "mask");
+    const slot = findPopupElement(popup, "slot");
 
-  const popup = document.querySelector(`[petal='${popupName}'][petal-el='popup']`) as HTMLElement | null;
-  if (!popup) {
-    logError("NO_POPUP", popupName, trigger);
-    return;
-  }
+    // Set slot opacity to 0
+    if (slot) (slot as HTMLElement).style.opacity = "0";
 
-  // Popup Elements
-  const mask = popup.querySelector("[petal-el='mask']");
-  const slot = popup.querySelector("[petal-el='slot']");
+    // Set mask opacity to 0
+    if (mask) (mask as HTMLElement).style.opacity = "0";
 
-  // Mask Settings
-  const maskOpacity = parseFloat(mask?.getAttribute("petal-mask-opacity") || "0.15");
+    // Set popup display to none
+    popup.style.display = "none";
+  });
+}
 
-  // Initialize GSAP timeline
+// Animate open/close
+export function openPopup(petal: PetalElements): void {
+  const { name, popup, slot, mask } = petal;
   const tl = gsap.timeline();
 
-  // Initialize Popup
-  gsap.set(slot, { opacity: 0 });
+  // Set Popup display to flex
+  tl.set(popup, { display: "flex" });
+  // Animate Mask open
+  const maskOpacity = parseFloat(mask?.getAttribute(ATTR_PETAL_MASK_OPACITY) || "0.15");
+  tl.fromTo(mask, animateMaskOpen(maskOpacity).from, animateMaskOpen(maskOpacity).to, "<");
+  // Animate Slot Open
+  const anim = getAnimation(popup, "open");
+  console.log("Opening popup:", name, "with animation:", anim);
+  tl.set(slot, { clearProps: "x,y,scale,transform" });
+  tl.fromTo(slot, anim.from, anim.to);
+}
 
-  trigger.addEventListener("click", () => animate(popup));
+// Animate open/close
+export function closePopup(petal: PetalElements): void {
+  const { name, popup, slot, mask } = petal;
+  const tl = gsap.timeline();
 
-  // Animate open/close
-  function animate(popup: HTMLElement): void {
-    if (!slot) console.warn("A slot was not found for this popup.");
+  // Pause any videos in the popup
+  pauseVideo(popup);
+  // Animate the Slot Closed
+  const anim = getAnimation(popup, "close");
+  console.log("Closing popup:", name, "with animation:", anim);
+  tl.fromTo(slot, anim.from, anim.to);
+  // Animate Mask Closed
+  if (mask) tl.to(mask, animateMaskClosed(0).to, "<");
 
-    // Get the animation
-    const open = getComputedStyle(popup).display !== "none";
-    const anim = getAnimationNew(popup, open);
-    console.log(anim);
+  // Hide the Popup and clear transforms so they don't persist
+  tl.set(popup, { display: "none" });
+  tl.set(slot, { clearProps: "x,y,scale,transform" });
+}
 
-    console.log(`[Petal Popup]`, {
-      popupName,
-      popup,
-      slot,
-      maskOpacity,
-      open,
-      anim,
-    });
-
-    // If the popup is closed, open it
-    if (!open) {
-      // Show Popup
-      tl.set(popup, { display: "flex" });
-      // Animate Mask Open
-      if (mask) {
-        tl.fromTo(mask, animateMaskOpen(maskOpacity).from, animateMaskOpen(maskOpacity).to, "<");
-      }
-      // Animate the Slot Open
-      tl.fromTo(slot, anim.from, anim.to);
-    }
-
-    // If the popup is open, close it
-    else {
-      // Pause any videos in the popup
-      pauseVideo(popup);
-      // Animate the Slot Closed
-      tl.fromTo(slot, anim.from, anim.to);
-      // Animate Mask Closed
-      if (mask) {
-        tl.fromTo(mask, animateMaskClosed(maskOpacity).from, animateMaskClosed(maskOpacity).to, "<");
-      }
-      // Hide the Popup
-      tl.set(popup, { display: "none" });
-    }
-  }
+// Initialize popup triggers
+forEachPetalTrigger(getAllPetalElementsOfType(ATTR_PETAL_OPEN), (petal) => {
+  const { trigger } = petal;
+  trigger.addEventListener("click", () => openPopup(petal));
 });
 
-// Centralized error logging
-function logError(error: ErrorType, popupName: string, trigger: Element): void {
-  switch (error) {
-    case "NO_NAME":
-      console.error(`Trigger is missing the "petal" attribute:`, trigger);
-      break;
-    case "NO_POPUP":
-      console.error(`Popup with name "${popupName}" not found for trigger:`, trigger);
-      break;
-    default:
-      console.error(`Popup error [${error}] for "${popupName}":`, trigger);
-  }
-}
+forEachPetalTrigger(getAllPetalElementsOfType(ATTR_PETAL_CLOSE), (petal) => {
+  const { trigger } = petal;
+  trigger.addEventListener("click", () => closePopup(petal));
+});

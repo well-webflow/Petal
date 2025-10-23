@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.js",
+    "dev": "webpack serve --config webpack.config.js",
     "tsc": "tsc --noEmit"
   },
   "keywords": [],
@@ -24,7 +25,9 @@
     "prettier": "^3.5.3",
     "ts-loader": "^9.5.1",
     "typescript": "^5.7.3",
-    "webpack-cli": "^5.1.4"
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.0"
   },
   "peerDependencies": {
     "gsap": "^3.13.0"

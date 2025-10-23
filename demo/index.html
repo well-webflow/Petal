@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petal Popup Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Petal Popup Demo</h1>
+      <p>Click the buttons below to test different popup animations and configurations.</p>
+
+      <div class="buttons">
+        <!-- Scale Up Popup Trigger -->
+        <button petal-el="open" petal="scale-popup" class="btn">Open Scale Popup</button>
+
+        <!-- Slide Down Popup Trigger -->
+        <button petal-el="open" petal="slide-down-popup" class="btn">Open Slide Down Popup</button>
+
+        <!-- Slide Left Popup Trigger -->
+        <button petal-el="open" petal="slide-left-popup" class="btn">Open Slide Left Popup</button>
+
+        <!-- Mobile Responsive Popup Trigger -->
+        <button petal-el="open" petal="responsive-popup" class="btn">Open Responsive Popup</button>
+
+        <!-- Different Open/Close Animation Trigger -->
+        <button petal-el="open" petal="custom-mask-popup" class="btn">Open Different Animations Popup</button>
+      </div>
+    </div>
+
+    <!-- Scale Up Popup -->
+    <div petal-el="popup" petal="scale-popup" petal-anim-open="scale" petal-duration="0.5" petal-slot-opacity="0.5" class="popup">
+      <div petal-el="mask" petal-mask-opacity="0.15" class="mask"></div>
+      <div petal-el="slot" class="slot">
+        <div class="popup-content">
+          <h2>Scale Popup</h2>
+          <p>This popup uses a scale animation (auto-reverses on close).</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <button petal-el="close" petal="scale-popup" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide Down Popup -->
+    <div petal-el="popup" petal="slide-down-popup" petal-anim-open="slide-down" petal-duration="0.6" class="popup">
+      <div petal-el="mask" petal-mask-opacity="0.2" class="mask"></div>
+      <div petal-el="slot" class="slot">
+        <div class="popup-content">
+          <h2>Slide Down Popup</h2>
+          <p>This popup slides down from the top when opening, slides up to the top when closing.</p>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <button petal-el="close" petal="slide-down-popup" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide Left Popup -->
+    <div petal-el="popup" petal="slide-left-popup" petal-anim-open="slide-left" petal-duration="0.6" class="popup">
+      <div petal-el="mask" petal-mask-opacity="0.2" class="mask"></div>
+      <div petal-el="slot" class="slot">
+        <div class="popup-content">
+          <h2>Slide Left Popup</h2>
+          <p>This popup slides in from the left when opening, slides up to the top when closing.</p>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <button petal-el="close" petal="slide-left-popup" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Responsive Popup (Different animations for mobile/desktop) -->
+    <div petal-el="popup" petal="responsive-popup" petal-anim-open="scale" petal-anim-open-mobile="slide-up" petal-duration="0.5" class="popup">
+      <div petal-el="mask" petal-mask-opacity="0.3" class="mask"></div>
+      <div petal-el="slot" class="slot">
+        <div class="popup-content">
+          <h2>Responsive Popup</h2>
+          <p>This popup uses scale on desktop and slide-up (from bottom) on mobile.</p>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          <button petal-el="close" petal="responsive-popup" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Different Open/Close Animations -->
+    <div petal-el="popup" petal="custom-mask-popup" petal-anim-open="scale" petal-anim-close="slide-up" petal-duration="0.5" class="popup">
+      <div petal-el="mask" petal-mask-opacity="0.6" class="mask"></div>
+      <div petal-el="slot" class="slot">
+        <div class="popup-content">
+          <h2>Different Open/Close Animations</h2>
+          <p>This popup scales when opening and slides down (to the bottom) when closing!</p>
+          <p>Darker background mask (opacity: 0.6).</p>
+          <button petal-el="close" petal="custom-mask-popup" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- Load Petal -->
+    <script src="petal.js"></script>
+
+    <!-- Initialize Petal -->
+    <script>
+      // Initialize all popups when page loads
+      if (window.petal && window.petal.initializeAllPopups) {
+        window.petal.initializeAllPopups();
+      }
+    </script>
+  </body>
+</html>

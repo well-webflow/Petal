@@ -1,71 +1,172 @@
+import { ATTR_PETAL_ANIM_OPEN, ATTR_PETAL_ANIM_CLOSE, ATTR_PETAL_ANIM_OPEN_MOBILE, ATTR_PETAL_ANIM_CLOSE_MOBILE, ATTR_PETAL_DURATION } from "./lib/attributes";
+
 // Popup animation types
-export type PopupAnimation = "scale-up" | "scale-down" | "slide-up" | "slide-down" | "slide-left" | "slide-right";
+export type PopupAnimation = "scale" | "slide-up" | "slide-down" | "slide-left" | "slide-right";
+const validAnimations: PopupAnimation[] = ["scale", "slide-up", "slide-down", "slide-left", "slide-right"];
 
-const validAnimations: PopupAnimation[] = ["scale-up", "scale-down", "slide-up", "slide-down", "slide-left", "slide-right"];
-
-const animationMap: Record<PopupAnimation, [(show: boolean) => GSAPTweenVars, (show: boolean) => GSAPTweenVars]> = {
-  "scale-up": [animateScaleUp, animateScaleDown],
-  "scale-down": [animateScaleDown, animateScaleUp],
-  "slide-up": [animateSlideUp, animateSlideDown],
-  "slide-down": [animateSlideDown, animateSlideUp],
-  "slide-left": [animateSlideLeft, animateSlideRight],
-  "slide-right": [animateSlideRight, animateSlideLeft],
+const animationOpenMap: Record<PopupAnimation, () => GSAPTweenVars> = {
+  scale: animateScaleUp,
+  "slide-up": animateOpenSlideUp,
+  "slide-down": animateOpenSlideDown,
+  "slide-left": animateOpenSlideLeft,
+  "slide-right": animateOpenSlideRight,
 };
 
-export function getAnimationNew(popup: HTMLElement, open: boolean): GSAPTweenVars {
-  // Popup Settings
-  const animationDesktop = getPopupAnimation(popup.getAttribute("petal-anim"));
-  const animationMobile = getPopupAnimation(popup.getAttribute("petal-anim-mobile")) || animationDesktop;
-  const duration = parseFloat(popup.getAttribute("petal-duration") || "0.5");
+const animationCloseMap: Record<PopupAnimation, () => GSAPTweenVars> = {
+  scale: animateScaleDown,
+  "slide-up": animateCloseSlideUp,
+  "slide-down": animateCloseSlideDown,
+  "slide-left": animateCloseSlideLeft,
+  "slide-right": animateCloseSlideRight,
+};
 
-  const animation = isMobile() ? animationMobile : animationDesktop;
+// Map open animations to their corresponding close animations
+const reverseAnimationMap: Record<PopupAnimation, PopupAnimation> = {
+  scale: "scale",
+  "slide-up": "slide-down",
+  "slide-down": "slide-up",
+  "slide-left": "slide-right",
+  "slide-right": "slide-left",
+};
 
-  const [normal, reverse] = animationMap[animation];
-  const gsapAnim = open ? reverse(false) : normal(true);
-  gsapAnim.to.duration = duration;
-  return gsapAnim;
+export function getAnimation(popup: HTMLElement, direction: "open" | "close"): GSAPTweenVars {
+  const duration = parseFloat(popup.getAttribute(ATTR_PETAL_DURATION) || "0.5");
+
+  // Determine which attributes to check based on direction and device
+  let animationType = getAnimationType(popup, direction);
+
+  console.log(`Animation type: `, animationType);
+
+  let anim;
+
+  // Get the animation based on direction
+  if (direction === "open") anim = animationOpenMap[animationType]();
+  else anim = animationCloseMap[animationType]();
+
+  console.log(`Using ${animationType} animation for ${direction} on popup:`, popup);
+
+  // If closing and no specific close animation is set, reverse the open animation
+  // const hasCloseAnim = popup.getAttribute(ATTR_PETAL_ANIM_CLOSE) || popup.getAttribute(ATTR_PETAL_ANIM_CLOSE_MOBILE);
+  // if (direction === "close" && !hasCloseAnim) {
+  //   // Swap from and to for reverse effect
+  //   const reversed = {
+  //     from: anim.to,
+  //     to: anim.from,
+  //   };
+  //   reversed.to.duration = duration;
+  //   return reversed;
+  // }
+
+  anim.to.duration = duration;
+  return anim;
+}
+
+function getAnimationType(popup: HTMLElement, direction: "open" | "close"): PopupAnimation {
+  const openDesktop = getPopupAnimation(popup, ATTR_PETAL_ANIM_OPEN);
+  const openMobile = getPopupAnimation(popup, ATTR_PETAL_ANIM_OPEN_MOBILE);
+
+  const closeDesktop = getPopupAnimation(popup, ATTR_PETAL_ANIM_CLOSE);
+  const closeMobile = getPopupAnimation(popup, ATTR_PETAL_ANIM_CLOSE_MOBILE);
+
+  if (direction === "open") {
+    if (isMobile()) return openMobile;
+    else return openDesktop;
+  }
+  // If closing
+  else {
+    const hasCloseDesktop = popup.hasAttribute(ATTR_PETAL_ANIM_CLOSE);
+    const hasCloseMobile = popup.hasAttribute(ATTR_PETAL_ANIM_CLOSE_MOBILE);
+
+    if (isMobile()) {
+      // If no mobile close animation is set, use the reverse of the open animation
+      return hasCloseMobile ? closeMobile : reverseAnimationMap[openMobile];
+    } else {
+      // If no desktop close animation is set, use the reverse of the open animation
+      return hasCloseDesktop ? closeDesktop : reverseAnimationMap[openDesktop];
+    }
+  }
 }
 
 // Individual animations
-function animateScaleUp(show: boolean): GSAPTweenVars {
+// Scale: works the same for open/close (just reversed)
+function animateScaleUp(): GSAPTweenVars {
   return {
-    from: { scale: 0 },
-    to: { scale: 1, opacity: show ? 1 : 0, ease: "power3.inOut" },
+    from: { scale: 0, opacity: 0 },
+    to: { scale: 1, opacity: 1, ease: "power3.inOut" },
   };
 }
 
-function animateScaleDown(show: boolean): GSAPTweenVars {
+// Scale: works the same for open/close (just reversed)
+function animateScaleDown(): GSAPTweenVars {
   return {
-    from: { scale: 1 },
-    to: { scale: 0, opacity: show ? 1 : 0, ease: "power3.inOut" },
+    from: { scale: 1, opacity: 0 },
+    to: { scale: 0, opacity: 1, ease: "power3.inOut" },
   };
 }
 
-function animateSlideUp(show: boolean): GSAPTweenVars {
+// Slide animations: direction describes the movement direction
+// slide-up = slides UP on both open and close (bottom → center → top)
+function animateOpenSlideUp(): GSAPTweenVars {
   return {
-    from: { y: "100%", x: "0%" },
-    to: { y: "0%", opacity: show ? 1 : 0, ease: "power3.inOut" },
+    from: { y: "100%", x: "0%", opacity: 0 }, // From bottom
+    to: { y: "0%", x: "0%", opacity: 1, ease: "power3.inOut" }, // To top
   };
 }
 
-function animateSlideDown(show: boolean): GSAPTweenVars {
+// Slide animations: direction describes the movement direction
+// slide-up = slides UP on both open and close (bottom → center → top)
+function animateCloseSlideUp(): GSAPTweenVars {
   return {
-    from: { y: "0%", x: "0%" },
-    to: { y: "100%", opacity: show ? 1 : 0, ease: "power3.inOut" },
+    from: { y: "0%", x: "0%", opacity: 1 }, // From bottom
+    to: { y: "-100%", x: "0%", opacity: 0, ease: "power3.inOut" }, // To top
   };
 }
 
-function animateSlideRight(show: boolean): GSAPTweenVars {
+// slide-down = slides DOWN on both open and close (top → center → bottom)
+function animateOpenSlideDown(): GSAPTweenVars {
   return {
-    from: { x: "0%", y: "0%" },
-    to: { x: "100%", opacity: show ? 1 : 0, ease: "power3.inOut" },
+    from: { y: "-100%", x: "0%", opacity: 0 }, // From top
+    to: { y: "0%", x: "0%", opacity: 1, ease: "power3.inOut" }, // To bottom
   };
 }
 
-function animateSlideLeft(show: boolean): GSAPTweenVars {
+// slide-down = slides DOWN on both open and close (top → center → bottom)
+function animateCloseSlideDown(): GSAPTweenVars {
   return {
-    from: { x: "100%", y: "0%" },
-    to: { x: "0%", opacity: show ? 1 : 0, ease: "power3.inOut" },
+    from: { y: "0%", x: "0%", opacity: 1 }, // From top
+    to: { y: "100%", x: "0%", opacity: 0, ease: "power3.inOut" }, // To bottom
+  };
+}
+
+// slide-right = slides RIGHT (from left to center) when opening, slides LEFT (center to left) when closing
+function animateOpenSlideRight(): GSAPTweenVars {
+  return {
+    from: { x: "-100%", y: "0%", opacity: 0 }, // From left
+    to: { x: "0%", y: "0%", opacity: 1, ease: "power3.inOut" }, // To center
+  };
+}
+
+// slide-right = slides RIGHT (from left to center) when opening, slides LEFT (center to left) when closing
+function animateCloseSlideRight(): GSAPTweenVars {
+  return {
+    from: { x: "0%", y: "0%", opacity: 1 }, // From left
+    to: { x: "100%", y: "0%", opacity: 0, ease: "power3.inOut" }, // To center
+  };
+}
+
+// slide-left = slides LEFT (from right to center) when opening, slides RIGHT (center to right) when closing
+function animateOpenSlideLeft(): GSAPTweenVars {
+  return {
+    from: { x: "100%", y: "0%", opacity: 0 }, // From right
+    to: { x: "0%", y: "0%", opacity: 1, ease: "power3.inOut" }, // To center
+  };
+}
+
+// slide-left = slides LEFT (from right to center) when opening, slides RIGHT (center to right) when closing
+function animateCloseSlideLeft(): GSAPTweenVars {
+  return {
+    from: { x: "0%", y: "0%", opacity: 1 }, // From right
+    to: { x: "-100%", y: "0%", opacity: 0, ease: "power3.inOut" }, // To center
   };
 }
 
@@ -95,6 +196,7 @@ export function isPopupAnimation(value: string): value is PopupAnimation {
 }
 
 // Safe parser with fallback
-function getPopupAnimation(raw: string | null | undefined): PopupAnimation {
+function getPopupAnimation(popup: HTMLElement, attr: string): PopupAnimation {
+  const raw = popup.getAttribute(attr);
   return isPopupAnimation(raw ?? "") ? (raw as PopupAnimation) : "slide-up";
 }
