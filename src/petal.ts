@@ -1,5 +1,6 @@
 import { findPopupElement, forEachPetalTrigger, getAllPetalElementsOfType, getAllPopups } from "./lib/helpers";
-import { animateMaskOpen, getAnimation, animateMaskClosed } from "./animation";
+import { getPopupGSAPAnimation } from "./animation";
+import { animateMaskOpen, animateMaskClosed } from "./lib/animations";
 import { ATTR_PETAL_CLOSE, ATTR_PETAL_OPEN, PetalElements } from "./lib/elements";
 import { ATTR_PETAL_MASK_OPACITY } from "./lib/attributes";
 import { pauseVideo } from "./video";
@@ -33,7 +34,7 @@ export function openPopup(petal: PetalElements): void {
   const maskOpacity = parseFloat(mask?.getAttribute(ATTR_PETAL_MASK_OPACITY) || "0.15");
   tl.fromTo(mask, animateMaskOpen(maskOpacity).from, animateMaskOpen(maskOpacity).to, "<");
   // Animate Slot Open
-  const anim = getAnimation(popup, "open");
+  const anim = getPopupGSAPAnimation(popup, "open");
   console.log("Opening popup:", name, "with animation:", anim);
   tl.set(slot, { clearProps: "x,y,scale,transform" });
   tl.fromTo(slot, anim.from, anim.to);
@@ -47,7 +48,7 @@ export function closePopup(petal: PetalElements): void {
   // Pause any videos in the popup
   pauseVideo(popup);
   // Animate the Slot Closed
-  const anim = getAnimation(popup, "close");
+  const anim = getPopupGSAPAnimation(popup, "close");
   console.log("Closing popup:", name, "with animation:", anim);
   tl.fromTo(slot, anim.from, anim.to);
   // Animate Mask Closed
@@ -58,12 +59,13 @@ export function closePopup(petal: PetalElements): void {
   tl.set(slot, { clearProps: "x,y,scale,transform" });
 }
 
-// Initialize popup triggers
+// Initialize Popup Open Triggers
 forEachPetalTrigger(getAllPetalElementsOfType(ATTR_PETAL_OPEN), (petal) => {
   const { trigger } = petal;
   trigger.addEventListener("click", () => openPopup(petal));
 });
 
+// Initialize Popup Close Triggers
 forEachPetalTrigger(getAllPetalElementsOfType(ATTR_PETAL_CLOSE), (petal) => {
   const { trigger } = petal;
   trigger.addEventListener("click", () => closePopup(petal));
