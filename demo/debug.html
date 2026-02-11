@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dropdown Container Query Debug</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Debug styles to visualize container query behavior */
+      .debug-container {
+        container-type: inline-size;
+        width: 100%;
+        border: 3px solid red;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .debug-container::before {
+        content: "Container width: " attr(data-width);
+        display: block;
+        background: yellow;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      .test-box {
+        padding: 20px;
+        background: red;
+        color: white;
+        margin: 10px 0;
+      }
+
+      @container (max-width: 60em) {
+        .test-box {
+          background: blue !important;
+        }
+        .test-box::before {
+          content: "MOBILE: Container <= 60em | ";
+        }
+      }
+
+      @container (min-width: 60.01em) {
+        .test-box {
+          background: green !important;
+        }
+        .test-box::before {
+          content: "DESKTOP: Container > 60em | ";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Container Query Debug</h1>
+
+    <div class="debug-container">
+      <div class="test-box">Test box - should be BLUE on mobile (<=60em) or GREEN on desktop (>60em)</div>
+    </div>
+
+    <!-- Load GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- Load Petal -->
+    <script src="/petal.js"></script>
+
+    <h2>Actual Dropdown Test</h2>
+    <div style="container-type: inline-size; width: 100%; border: 3px solid blue; padding: 20px;">
+      <p>Container has container-type: inline-size. Dropdown below should be CLOSED on desktop, OPEN on mobile.</p>
+
+      <div petal-el="dropdown" petal-group="nav" petal-dropdown-open-on-hover="true" petal-dropdown-open-on-mobile="true" petal-dropdown-open-delay="300" petal-dropdown-close-delay="400" style="position: relative; max-width: 300px;">
+        <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #4a90e2; color: white; cursor: pointer; border-radius: 4px;">
+          Dropdown Toggle
+        </div>
+        <div petal-el="dropdown-menu">
+          <div petal-el="dropdown-menu-box" style="min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 4px; margin-top: 0.5rem;">
+            <div style="padding: 1rem;">
+              <div style="padding: 0.5rem;">Menu Item 1</div>
+              <div style="padding: 0.5rem;">Menu Item 2</div>
+              <div style="padding: 0.5rem;">Menu Item 3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize dropdowns
+      if (window.petal && window.petal.initializeDropdowns) {
+        window.petal.initializeDropdowns();
+      }
+
+      // Debug: Log container width
+      const container = document.querySelector('.debug-container');
+      const ro = new ResizeObserver(entries => {
+        for (let entry of entries) {
+          const width = entry.contentRect.width;
+          const widthInEm = width / 16; // Assuming 16px = 1em
+          console.log(`Container width: ${width}px = ${widthInEm}em`);
+          container.setAttribute('data-width', `${width}px (${widthInEm.toFixed(2)}em)`);
+        }
+      });
+      ro.observe(container);
+    </script>
+  </body>
+</html>

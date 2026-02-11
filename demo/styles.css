@@ -14,6 +14,67 @@ body {
   padding: 20px;
 }
 
+/* Banner Styles */
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  z-index: 10000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.banner-content p {
+  margin: 0;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.banner-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 0;
+}
+
+.banner-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.banner-close:active {
+  transform: scale(0.95);
+}
+
+/* Adjust body padding when banner is visible */
+body {
+  padding-top: 70px;
+}
+
 /* Container */
 .container {
   max-width: 800px;
@@ -66,13 +127,13 @@ p {
   transform: translateY(0);
 }
 
-/* Popup Structure */
-.popup {
+/* Modal Structure */
+.modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: none;
   align-items: center;
   justify-content: center;
@@ -90,38 +151,74 @@ p {
   opacity: 0;
 }
 
-/* Slot (Popup Content Container) */
+/* Slot (Modal Content Container) */
 .slot {
   position: relative;
   z-index: 10000;
   max-width: 90%;
-  max-height: 90vh;
-  overflow: auto;
   opacity: 0;
+  align-self: center;
 }
 
-/* Popup Content */
-.popup-content {
+/* Full-height modals (left and right) */
+.slot.modal-left,
+.slot.modal-right {
+  max-width: 400px;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: auto;
+  align-self: stretch;
+}
+
+/* Full-width modals (top and bottom) */
+.slot.modal-top,
+.slot.modal-bottom {
+  max-height: 400px;
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+}
+
+/* Modal Content */
+.modal-content {
   background: white;
   padding: 40px;
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 500px;
-  width: 100%;
 }
 
-.popup-content h2 {
+/* Modal content for positioned modals */
+.modal-left .modal-content,
+.modal-right .modal-content {
+  max-width: none;
+  height: 100%;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-top .modal-content,
+.modal-bottom .modal-content {
+  max-width: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content h2 {
   color: #667eea;
   margin-bottom: 15px;
   font-size: 2rem;
 }
 
-.popup-content p {
+.modal-content p {
   margin-bottom: 15px;
   line-height: 1.8;
 }
 
-.popup-content p:last-of-type {
+.modal-content p:last-of-type {
   margin-bottom: 25px;
 }
 
@@ -153,17 +250,17 @@ p {
     width: 100%;
   }
 
-  .popup-content {
+  .modal-content {
     padding: 30px 20px;
     max-width: 95%;
   }
 
-  .popup-content h2 {
+  .modal-content h2 {
     font-size: 1.5rem;
   }
 }
 
-/* Scrollbar Styling for Popup Slot */
+/* Scrollbar Styling for Modal Slot */
 .slot::-webkit-scrollbar {
   width: 8px;
 }

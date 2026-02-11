@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Container Query Test</title>
+  <style>
+    .container {
+      container-type: inline-size;
+      width: 100%;
+      border: 2px solid black;
+      padding: 20px;
+    }
+
+    .box {
+      background: red;
+      padding: 20px;
+      color: white;
+    }
+
+    @container (min-width: 60.01em) {
+      .box {
+        background: green !important;
+      }
+      .box::before {
+        content: "DESKTOP (>60em): ";
+      }
+    }
+
+    @container (max-width: 60em) {
+      .box {
+        background: blue !important;
+      }
+      .box::before {
+        content: "MOBILE (<=60em): ";
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Container Query Test</h1>
+  <p>Resize the window. Green = Desktop (>60em), Blue = Mobile (<=60em)</p>
+
+  <div class="container">
+    <div class="box">
+      Container width test
+    </div>
+  </div>
+</body>
+</html>

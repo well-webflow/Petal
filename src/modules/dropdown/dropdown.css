@@ -1,0 +1,349 @@
+/* ===========================
+   Dropdown Core Styles
+   =========================== */
+
+/* Default CSS variable values */
+[petal-el="dropdown"] {
+  --dropdown-open-duration: 0.5s;
+  --dropdown-close-duration: 0.3s;
+}
+
+/* ===========================
+   Dropdown Animations
+   =========================== */
+
+/* Dropdown Menu: Initial (Closed) State - Hidden and prevent interaction */
+html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"] {
+  display: none;
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Dropdown Menu: Open State - Visible and allow interaction */
+html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"] {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Dropdown Drawer: Initial (Closed) State - Common Styles */
+html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-drawer"] {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    transform var(--dropdown-close-duration, 0.3s) ease,
+    opacity var(--dropdown-close-duration, 0.3s) ease,
+    visibility 0s var(--dropdown-close-duration, 0.3s);
+}
+
+/* Dropdown Drawer: Open State - Common Styles */
+html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-drawer"] {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    transform var(--dropdown-open-duration, 0.5s) ease,
+    opacity var(--dropdown-open-duration, 0.5s) ease,
+    visibility 0s;
+}
+
+/* Animation: Slide Down (Default) */
+html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim="slide-down"] [petal-el="dropdown-drawer"] {
+  transform: translateY(-10px);
+  transform-origin: top;
+}
+
+html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim="slide-down"] [petal-el="dropdown-drawer"] {
+  transform: translateY(0);
+}
+
+/* Animation: Slide Up */
+html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim="slide-up"] [petal-el="dropdown-drawer"] {
+  transform: translateY(10px);
+  transform-origin: bottom;
+}
+
+html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim="slide-up"] [petal-el="dropdown-drawer"] {
+  transform: translateY(0);
+}
+
+/* Animation: Slide Left */
+html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim="slide-left"] [petal-el="dropdown-drawer"] {
+  transform: translateX(10px);
+}
+
+html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim="slide-left"] [petal-el="dropdown-drawer"] {
+  transform: translateX(0);
+}
+
+/* Animation: Slide Right */
+html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim="slide-right"] [petal-el="dropdown-drawer"] {
+  transform: translateX(-10px);
+}
+
+html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim="slide-right"] [petal-el="dropdown-drawer"] {
+  transform: translateX(0);
+}
+
+/* ===========================
+   Tablet Animations (max-width: 991px)
+   =========================== */
+
+@media screen and (max-width: 991px) {
+  /* Animation: Slide Down */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-tablet="slide-down"] [petal-el="dropdown-drawer"] {
+    transform: translateY(-10px);
+    transform-origin: top;
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-tablet="slide-down"] [petal-el="dropdown-drawer"] {
+    transform: translateY(0);
+  }
+
+  /* Animation: Slide Up */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-tablet="slide-up"] [petal-el="dropdown-drawer"] {
+    transform: translateY(10px);
+    transform-origin: bottom;
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-tablet="slide-up"] [petal-el="dropdown-drawer"] {
+    transform: translateY(0);
+  }
+
+  /* Animation: Slide Left */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-tablet="slide-left"] [petal-el="dropdown-drawer"] {
+    transform: translateX(10px);
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-tablet="slide-left"] [petal-el="dropdown-drawer"] {
+    transform: translateX(0);
+  }
+
+  /* Animation: Slide Right */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-tablet="slide-right"] [petal-el="dropdown-drawer"] {
+    transform: translateX(-10px);
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-tablet="slide-right"] [petal-el="dropdown-drawer"] {
+    transform: translateX(0);
+  }
+}
+
+/* ===========================
+   Mobile Landscape Animations (max-width: 767px)
+   =========================== */
+
+@media screen and (max-width: 767px) {
+  /* Animation: Slide Down */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-mobile-landscape="slide-down"] [petal-el="dropdown-drawer"] {
+    transform: translateY(-10px);
+    transform-origin: top;
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-mobile-landscape="slide-down"] [petal-el="dropdown-drawer"] {
+    transform: translateY(0);
+  }
+
+  /* Animation: Slide Up */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-mobile-landscape="slide-up"] [petal-el="dropdown-drawer"] {
+    transform: translateY(10px);
+    transform-origin: bottom;
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-mobile-landscape="slide-up"] [petal-el="dropdown-drawer"] {
+    transform: translateY(0);
+  }
+
+  /* Animation: Slide Left */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-mobile-landscape="slide-left"] [petal-el="dropdown-drawer"] {
+    transform: translateX(10px);
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-mobile-landscape="slide-left"] [petal-el="dropdown-drawer"] {
+    transform: translateX(0);
+  }
+
+  /* Animation: Slide Right */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-mobile-landscape="slide-right"] [petal-el="dropdown-drawer"] {
+    transform: translateX(-10px);
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-mobile-landscape="slide-right"] [petal-el="dropdown-drawer"] {
+    transform: translateX(0);
+  }
+}
+
+/* ===========================
+   Mobile Animations (max-width: 479px)
+   =========================== */
+
+@media screen and (max-width: 479px) {
+  /* Animation: Slide Down */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-mobile="slide-down"] [petal-el="dropdown-drawer"] {
+    transform: translateY(-10px);
+    transform-origin: top;
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-mobile="slide-down"] [petal-el="dropdown-drawer"] {
+    transform: translateY(0);
+  }
+
+  /* Animation: Slide Up */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-mobile="slide-up"] [petal-el="dropdown-drawer"] {
+    transform: translateY(10px);
+    transform-origin: bottom;
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-mobile="slide-up"] [petal-el="dropdown-drawer"] {
+    transform: translateY(0);
+  }
+
+  /* Animation: Slide Left */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-mobile="slide-left"] [petal-el="dropdown-drawer"] {
+    transform: translateX(10px);
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-mobile="slide-left"] [petal-el="dropdown-drawer"] {
+    transform: translateX(0);
+  }
+
+  /* Animation: Slide Right */
+  html:not(.wf-design-mode) [petal-el="dropdown"] [petal-el="dropdown-menu"][data-anim-mobile="slide-right"] [petal-el="dropdown-drawer"] {
+    transform: translateX(-10px);
+  }
+
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-state="open"] [petal-el="dropdown-menu"][data-anim-mobile="slide-right"] [petal-el="dropdown-drawer"] {
+    transform: translateX(0);
+  }
+}
+
+/* ===========================
+   Dropdown Backdrop
+   =========================== */
+
+[petal-el="dropdown-backdrop"] {
+  opacity: 0;
+  transition: opacity var(--dropdown-close-duration, 0.3s) ease;
+}
+
+body:has([petal-el="dropdown"] > [petal-el="dropdown-toggle"][aria-expanded="true"]) [petal-el="dropdown-backdrop"] {
+  opacity: 1;
+  transition: opacity var(--dropdown-open-duration, 0.5s) ease;
+}
+
+/* ===========================
+   Mobile Styles (Override on small containers)
+   =========================== */
+
+@media screen and (max-width: 991px) {
+  /* Always visible on tablet - show dropdown menu and override closed state */
+  [petal-el="dropdown"][petal-visible-tablet="true"] [petal-el="dropdown-menu"] {
+    display: block !important;
+    position: static !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Unset all animation styles on dropdown-drawer when always visible on tablet */
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-visible-tablet="true"] [petal-el="dropdown-drawer"] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    transition: none !important;
+  }
+
+  /* Hide dropdown background when always visible on tablet */
+  [petal-el="dropdown"][petal-visible-tablet="true"] [petal-el="dropdown-background"] {
+    display: none;
+  }
+
+  /* Legacy support for old attribute name */
+  [petal-el="dropdown"][petal-dropdown-expand-tablet="true"] [petal-el="dropdown-toggle"] {
+    display: none !important;
+  }
+  [petal-el="dropdown"][petal-dropdown-expand-tablet="true"] [petal-el="dropdown-menu"] {
+    position: static !important;
+  }
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-dropdown-expand-tablet="true"] [petal-el="dropdown-drawer"] {
+    all: unset !important;
+    display: block !important;
+  }
+  [petal-el="dropdown"][petal-dropdown-expand-tablet="true"] [petal-el="dropdown-background"] {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  /* Always visible on mobile landscape - show dropdown menu and override closed state */
+  [petal-el="dropdown"][petal-visible-mobile-landscape="true"] [petal-el="dropdown-menu"] {
+    display: block !important;
+    position: static !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Unset all animation styles on dropdown-drawer when always visible on mobile landscape */
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-visible-mobile-landscape="true"] [petal-el="dropdown-drawer"] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    transition: none !important;
+  }
+
+  /* Hide dropdown background when always visible on mobile landscape */
+  [petal-el="dropdown"][petal-visible-mobile-landscape="true"] [petal-el="dropdown-background"] {
+    display: none;
+  }
+
+  /* Legacy support for old attribute name */
+  [petal-el="dropdown"][petal-dropdown-expand-mobile-landscape="true"] [petal-el="dropdown-toggle"] {
+    display: none !important;
+  }
+  [petal-el="dropdown"][petal-dropdown-expand-mobile-landscape="true"] [petal-el="dropdown-menu"] {
+    position: static !important;
+  }
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-dropdown-expand-mobile-landscape="true"] [petal-el="dropdown-drawer"] {
+    all: unset !important;
+    display: block !important;
+  }
+  [petal-el="dropdown"][petal-dropdown-expand-mobile-landscape="true"] [petal-el="dropdown-background"] {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  /* Always visible on mobile - show dropdown menu and override closed state */
+  [petal-el="dropdown"][petal-visible-mobile="true"] [petal-el="dropdown-menu"] {
+    display: block !important;
+    position: static !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Unset all animation styles on dropdown-drawer when always visible on mobile */
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-visible-mobile="true"] [petal-el="dropdown-drawer"] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    transition: none !important;
+  }
+
+  /* Hide dropdown background when always visible on mobile */
+  [petal-el="dropdown"][petal-visible-mobile="true"] [petal-el="dropdown-background"] {
+    display: none;
+  }
+
+  /* Legacy support for old attribute name */
+  [petal-el="dropdown"][petal-dropdown-expand-mobile="true"] [petal-el="dropdown-toggle"] {
+    display: none !important;
+  }
+  [petal-el="dropdown"][petal-dropdown-expand-mobile="true"] [petal-el="dropdown-menu"] {
+    position: static !important;
+  }
+  html:not(.wf-design-mode) [petal-el="dropdown"][petal-dropdown-expand-mobile="true"] [petal-el="dropdown-drawer"] {
+    all: unset !important;
+    display: block !important;
+  }
+  [petal-el="dropdown"][petal-dropdown-expand-mobile="true"] [petal-el="dropdown-background"] {
+    display: none;
+  }
+}

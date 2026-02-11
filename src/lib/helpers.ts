@@ -1,49 +1,116 @@
-import { MissingMaskError, MissingNameError, MissingPopupError, MissingSlotError, PetalError } from "./console";
-import { ATTR_PETAL_NAME, ATTR_PETAL_ELEMENT, ATTR_PETAL_POPUP, PetalElements } from "./elements";
+import { ATTR_PETAL_ELEMENT, ATTR_PETAL_NAME } from "./attributes";
 
-export function getAllPetalElementsOfType(el: string) {
+export function getAllPetalElementsOfType(el: string): NodeListOf<Element> {
   return document.querySelectorAll(`[${ATTR_PETAL_ELEMENT}='${el}']`);
 }
 
-export function getAllPopups(): NodeListOf<HTMLElement> {
-  return document.querySelectorAll(`[${ATTR_PETAL_ELEMENT}='${ATTR_PETAL_POPUP}']`);
+export function getPetalElementInParent(parent: Element, el: string): HTMLElement | null {
+  return parent.querySelector(`[${ATTR_PETAL_ELEMENT}='${el}']`);
 }
 
-export function findPetal(el: Element): HTMLElement {
-  const popupName = el.getAttribute(ATTR_PETAL_NAME);
-  if (!popupName) throw new MissingNameError(el);
-
-  const popup = document.querySelector(`[${ATTR_PETAL_NAME}='${popupName}'][${ATTR_PETAL_ELEMENT}='${ATTR_PETAL_POPUP}']`) as HTMLElement | null;
-  if (!popup) throw new MissingPopupError(popupName, el);
-
-  return popup;
+export function getPetalElementsInParent(parent: Element, el: string): NodeListOf<HTMLElement> | null {
+  return parent.querySelectorAll(`[${ATTR_PETAL_ELEMENT}='${el}']`);
 }
 
-export function findPopupElement(popup: HTMLElement, attr: string): Element | null {
-  return popup.querySelector(`[${ATTR_PETAL_ELEMENT}='${attr}']`);
+/**
+ * Find Petal Element by Name
+ * @param name The Petal Name for the Element (Set with petal=['NAME']).
+ * @param el The Attribute of the Element to get.
+ * @returns An Element of the correct type with the matching name or null if none is found.
+ */
+export function findPetalElementByName(name: string | null, el: string): HTMLElement | null {
+  return document.querySelector(`[${ATTR_PETAL_NAME}='${name}'][${ATTR_PETAL_ELEMENT}='${el}']`);
 }
 
-// Helper to iterate over triggers with error handling
-export function forEachPetalTrigger(triggers: NodeListOf<Element>, callback: (petal: PetalElements) => void): void {
-  triggers.forEach((trigger) => {
-    try {
-      const popup = findPetal(trigger);
-      const name = trigger.getAttribute(ATTR_PETAL_NAME) || "unknown";
+/**
+ * Find Petal Elements by Name
+ * @param name The Petal Name for the Elements (Set with petal=['NAME']).
+ * @param el The Attribute of the Elements to get.
+ * @returns Elements of the correct type with the matching name or null if none is found.
+ */
+export function findPetalElementsByName(name: string | null, el: string): NodeListOf<HTMLElement> | null {
+  return document.querySelectorAll(`[${ATTR_PETAL_NAME}='${name}'][${ATTR_PETAL_ELEMENT}='${el}']`);
+}
 
-      const mask = popup.querySelector(`[${ATTR_PETAL_ELEMENT}='mask']`);
-      if (!mask) throw new MissingMaskError(name, trigger);
+export function findPetalElementByNameOrInParent(parent: Element, name: string | null, el: string): HTMLElement | null {
+  // First try to find by name globally
+  const globalMatch = findPetalElementByName(name, el);
+  if (globalMatch) return globalMatch;
 
-      const slot = popup.querySelector(`[${ATTR_PETAL_ELEMENT}='slot']`);
-      if (!slot) throw new MissingSlotError(name, trigger);
+  // If no name match, try to find within the parent
+  return getPetalElementInParent(parent, el);
+}
 
-      callback({ name, trigger, popup, mask, slot });
-    } catch (error) {
-      if (error instanceof PetalError) {
-        // Log and skip invalid triggers
-        console.error(`[${error.name}]:`, error.message, error.element);
-      } else {
-        throw error; // Re-throw unexpected errors
-      }
+export function findPetalElementsByNameOrInParent(parent: Element, name: string | null, el: string): NodeListOf<HTMLElement> | null {
+  // First try to find by name globally
+  const globalMatch = findPetalElementsByName(name, el);
+  if (globalMatch && globalMatch.length > 0) return globalMatch;
+
+  // If no name match, try to find within the parent
+  return getPetalElementsInParent(parent, el);
+}
+
+/**
+ * Find the closest parent element with a specific petal-el attribute
+ * @param element The starting element
+ * @param petalElType The petal-el type to search for (e.g., 'modal', 'dropdown')
+ * @returns The closest parent with the specified petal-el type, or null if none found
+ */
+export function findClosestPetalParent(element: Element, petalElType: string): HTMLElement | null {
+  let current = element.parentElement;
+
+  while (current) {
+    if (current.getAttribute(ATTR_PETAL_ELEMENT) === petalElType) {
+      return current as HTMLElement;
     }
-  });
+    current = current.parentElement;
+  }
+
+  return null;
+}
+
+export function parseNumber(raw: string | null): number | undefined {
+  if (raw === null) return undefined;
+  const parsed = parseFloat(raw);
+  return isNaN(parsed) ? undefined : parsed;
+}
+
+/**
+ * Parses a boolean attribute value.
+ * Returns undefined if the raw value is null, otherwise returns true for "true" and false otherwise.
+ */
+export function parseBoolean(raw: string | null): boolean | undefined {
+  if (raw === null) return undefined;
+  return raw === "true";
+}
+
+/**
+ * Parses an offset value.
+ * Returns the string as-is if it contains "%", otherwise parses as an integer.
+ * Returns 0 if the raw value is null.
+ */
+export function parseOffset(raw: string | null): number | string {
+  if (raw === null) return 0;
+  return raw.includes("%") ? raw : parseInt(raw);
+}
+
+export function parseString(raw: string | null): string | undefined {
+  return raw ?? undefined;
+}
+
+/**
+ * Identity parser that returns the value as-is, typed as the provided generic.
+ * Useful when you need to satisfy a parser function signature but don't want to transform the value.
+ */
+export function parseAsIs<T>(raw: T): T {
+  return raw;
+}
+
+/**
+ * Checks if an object contains only null or undefined values
+ * @param obj The object to check
+ * @returns true if all values are null or undefined, false otherwise
+ */
+export function isAllNullish(obj: any): boolean {
+  return Object.keys(obj).every((key) => obj[key] == null);
 }

@@ -1,8 +1,11 @@
 {
   "name": "well-petal",
-  "version": "0.0.22",
-  "description": "Webflow Popups powered by attributes",
-  "main": "petal.js",
+  "version": "0.0.88",
+  "description": "Webflow Popups powered by Attributes",
+  "main": "dist/petal.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.js",
@@ -18,11 +21,13 @@
     "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
+    "css-loader": "^7.1.2",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "gsap": "*",
     "prettier": "^3.5.3",
+    "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.7.3",
     "webpack": "^5.96.1",

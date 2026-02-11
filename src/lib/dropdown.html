@@ -1,0 +1,199 @@
+<script>
+  /**
+   * Dropdown Component
+   *
+   * Handles interactive dropdown menus with support for:
+   * - Click or hover-based opening
+   * - Customizable close delays
+   * - Grouped dropdown coordination
+   * - CSS-based animations
+   * - Accessibility (aria-expanded)
+   *
+   * HTML Attributes:
+   * - petal-el="dropdown" - Container element
+   * - petal-el="dropdown-toggle" - Clickable/hoverable trigger
+   * - petal-el="dropdown-menu" - Menu content
+   * - petal-el="dropdown-background" (optional) - Background overlay
+   * - petal-group="name" (optional) - Group name for coordinated animations
+   * - petal-debug="true" (optional) - Enable debug console logging
+   * - petal-dropdown-open-on-hover="true" (optional) - Use hover instead of click
+   * - petal-dropdown-delay="ms" (optional) - Close delay in milliseconds (default: 0)
+   */
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdowns = document.querySelectorAll("[petal-el='dropdown']");
+
+    dropdowns.forEach((dropdown, index) => {
+      // ===========================
+      // Element References
+      // ===========================
+      const toggle = dropdown.querySelector("[petal-el='dropdown-toggle']");
+      const menu = dropdown.querySelector("[petal-el='dropdown-menu']");
+      const background = dropdown.querySelector("[petal-el='dropdown-background']");
+
+      // ===========================
+      // Configuration
+      // ===========================
+      const group = dropdown.getAttribute("petal-group") || null;
+      const debug = dropdown.getAttribute("petal-debug") === "true";
+      const openOnHover = dropdown.getAttribute("petal-dropdown-open-on-hover") === "true";
+      const closeDelay = parseInt(dropdown.getAttribute("petal-dropdown-delay") || "0", 10);
+
+      if (debug) {
+        console.log(`Dropdown ${index + 1} - openOnHover:`, openOnHover);
+        console.log(`Dropdown ${index + 1} - closeDelay:`, closeDelay);
+        console.log(`Dropdown ${index + 1} - group:`, group);
+      }
+
+      // Validate required elements
+      if (!toggle || !menu) {
+        return;
+      }
+
+      // ===========================
+      // State Management
+      // ===========================
+      let isOpen = false;
+      let timeoutId = null;
+
+      // ===========================
+      // Core Functions
+      // ===========================
+
+      /**
+       * Opens the dropdown menu
+       * - Cancels any pending close timeout
+       * - Delays opening if another dropdown in same group is open
+       * - Adds w--open class and sets aria-expanded="true"
+       */
+      const openDropdown = () => {
+        // Cancel any pending close
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+
+        // Check if we need to delay opening (group coordination)
+        let openDelay = 0;
+        if (group) {
+          const groupDropdowns = document.querySelectorAll(`[petal-el='dropdown'][petal-group='${group}']`);
+
+          if (debug) console.log(`Dropdown ${index + 1} - Checking group '${group}' for open dropdowns`);
+
+          // Find the currently open dropdown in this group
+          const openDropdownInGroup = Array.from(groupDropdowns).find((dd) => {
+            const ddToggle = dd.querySelector("[petal-el='dropdown-toggle']");
+            return ddToggle && ddToggle !== toggle && ddToggle.getAttribute("aria-expanded") === "true";
+          });
+
+          // If another is open, get its close delay attribute
+          if (openDropdownInGroup) {
+            openDelay = parseInt(
+              openDropdownInGroup.getAttribute("petal-dropdown-delay") || "0",
+              10
+            );
+
+            if (debug) console.log(`Dropdown ${index + 1} - Delaying open by ${openDelay}ms (using other dropdown's delay attribute)`);
+          }
+        }
+
+        // Perform the actual open (immediately or delayed)
+        const performOpen = () => {
+          menu.classList.add("w--open");
+          toggle.setAttribute("aria-expanded", "true");
+
+          if (background) background.style.opacity = "1";
+
+          isOpen = true;
+        };
+
+        if (openDelay > 0) {
+          setTimeout(performOpen, openDelay);
+        } else {
+          performOpen();
+        }
+      };
+
+      /**
+       * Closes the dropdown menu
+       * - Cancels any pending close timeout
+       * - Removes w--open class and sets aria-expanded="false"
+       */
+      const closeDropdown = () => {
+        // Cancel any pending close
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+
+        menu.classList.remove("w--open");
+        toggle.setAttribute("aria-expanded", "false");
+
+        if (background) {
+          background.style.opacity = "0";
+        }
+
+        isOpen = false;
+      };
+
+      /**
+       * Closes the dropdown with an optional delay
+       * - Uses petal-dropdown-delay attribute value
+       * - Stores timeout ID for potential cancellation
+       */
+      const closeDropdownWithDelay = () => {
+        if (closeDelay > 0) {
+          if (debug) console.log(`Dropdown ${index + 1} - Scheduling close with ${closeDelay}ms delay`);
+          timeoutId = setTimeout(closeDropdown, closeDelay);
+        } else {
+          closeDropdown();
+        }
+      };
+
+      /**
+       * Toggles the dropdown between open and closed states
+       * - Used for click-based dropdowns
+       */
+      const toggleDropdown = () => {
+        if (isOpen) {
+          closeDropdown();
+        } else {
+          openDropdown();
+        }
+      };
+
+      /**
+       * Handles clicks outside the dropdown
+       * - Only active for click-based dropdowns
+       * - Closes dropdown if click is outside both toggle and menu
+       */
+      const handleOutsideClick = (event) => {
+        if (!isOpen) return;
+
+        const clickedInsideDropdown = dropdown.contains(event.target);
+
+        if (!clickedInsideDropdown) {
+          closeDropdown();
+        }
+      };
+
+      // ===========================
+      // Initialization
+      // ===========================
+
+      // Set initial aria-expanded state
+      toggle.setAttribute("aria-expanded", "false");
+
+      // Attach event listeners based on configuration
+      if (openOnHover) {
+        dropdown.addEventListener("mouseenter", openDropdown);
+        dropdown.addEventListener("mouseleave", closeDropdownWithDelay);
+      } else {
+        toggle.addEventListener("click", toggleDropdown);
+
+        // Add outside click listener for click-based dropdowns
+        document.addEventListener("click", handleOutsideClick);
+      }
+    });
+  });
+</script>

@@ -3,93 +3,1388 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Petal Popup Demo</title>
+    <title>Petal Modal Demo</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Banner at top of page -->
+    <div petal-el="banner" petal="demo-banner" petal-session-ttl="5" class="banner">
+      <div class="banner-content">
+        <p>🎉 Welcome to Petal! This banner remembers you closed it for 5 minutes (set via petal-session-ttl).</p>
+        <button petal-el="banner-close" class="banner-close" aria-label="Close banner">×</button>
+      </div>
+    </div>
+
+    <!-- Banner that cannot be closed -->
+    <!-- <div petal-el="banner" petal="no-close-banner" petal-allow-close="false" class="banner" style="background-color: #ff6b6b;">
+      <div class="banner-content">
+        <p>⚠️ This banner cannot be closed! The close button is hidden and memory is cleared (petal-allow-close="false").</p>
+        <button petal-el="banner-close" class="banner-close" aria-label="Close banner">×</button>
+      </div>
+    </div> -->
+
     <div class="container">
-      <h1>Petal Popup Demo</h1>
-      <p>Click the buttons below to test different popup animations and configurations.</p>
+      <h1>Petal Demo</h1>
+
+      <h2>Modal Demo - Modal Types</h2>
+      <p>Click the buttons below to test the 5 modal types: center, left, right, top, and bottom.</p>
 
       <div class="buttons">
-        <!-- Scale Up Popup Trigger -->
-        <button petal-el="open" petal="scale-popup" class="btn">Open Scale Popup</button>
+        <!-- Center Modal Trigger -->
+        <button petal-el="trigger-open" petal="center-modal" class="btn">Open Center Modal</button>
 
-        <!-- Slide Down Popup Trigger -->
-        <button petal-el="open" petal="slide-down-popup" class="btn">Open Slide Down Popup</button>
+        <!-- Left Modal Trigger -->
+        <button petal-el="trigger-open" petal="left-modal" class="btn">Open Left Modal</button>
 
-        <!-- Slide Left Popup Trigger -->
-        <button petal-el="open" petal="slide-left-popup" class="btn">Open Slide Left Popup</button>
+        <!-- Right Modal Trigger -->
+        <button petal-el="trigger-open" petal="right-modal" class="btn">Open Right Modal</button>
 
-        <!-- Mobile Responsive Popup Trigger -->
-        <button petal-el="open" petal="responsive-popup" class="btn">Open Responsive Popup</button>
+        <!-- Top Modal Trigger -->
+        <button petal-el="trigger-open" petal="top-modal" class="btn">Open Top Modal</button>
+
+        <!-- Bottom Modal Trigger -->
+        <button petal-el="trigger-open" petal="bottom-modal" class="btn">Open Bottom Modal</button>
+      </div>
+
+      <h2 style="margin-top: 3rem">Modal Demo - Scroll Lock Feature</h2>
+      <p>
+        By default, modals lock the page scroll when opened. This prevents the background from scrolling while the modal is active, creating a better user experience. You can disable this by setting
+        <code>petal-lock-scroll-on-open="false"</code>.
+      </p>
+
+      <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1rem">Try it out:</h3>
+        <ol style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: #666; line-height: 1.6">
+          <li>Scroll down this page a bit</li>
+          <li>Click "Scroll Locked Modal" - notice you can't scroll the background page</li>
+          <li>Close it and try "Scroll Unlocked Modal" - you can scroll the background</li>
+        </ol>
+      </div>
+
+      <div class="buttons">
+        <!-- Scroll Locked Modal (default behavior) -->
+        <button petal-el="trigger-open" petal="scroll-locked-modal" class="btn">Open Scroll Locked Modal (Default)</button>
+
+        <!-- Scroll Unlocked Modal -->
+        <button petal-el="trigger-open" petal="scroll-unlocked-modal" class="btn">Open Scroll Unlocked Modal</button>
+      </div>
+
+      <h2 style="margin-top: 3rem">Modal Demo - Custom Animations</h2>
+      <p>
+        Override the default type-based animations with <code>petal-anim-open</code> and <code>petal-anim-close</code> attributes. You can set them independently — e.g. scale open, slide-down close.
+      </p>
+
+      <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 4px; margin-bottom: 1.5rem">
+        <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem">Close Animation Examples:</h3>
+        <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: #666; line-height: 1.8">
+          <li><strong>Scale open → Slide-down close</strong> — opens with a pop, closes by sliding away</li>
+          <li><strong>Slide-right open → Fade-out close</strong> — enters from the left, fades away on close</li>
+          <li>If no <code>petal-anim-close</code> is set, the close animation is automatically the reverse of the open animation</li>
+        </ul>
+      </div>
+
+      <div class="buttons">
+        <!-- Mobile Responsive Modal Trigger -->
+        <button petal-el="trigger-open" petal="responsive-modal" class="btn">Open Responsive Modal</button>
 
         <!-- Different Open/Close Animation Trigger -->
-        <button petal-el="open" petal="custom-mask-popup" class="btn">Open Different Animations Popup</button>
-      </div>
-    </div>
+        <button petal-el="trigger-open" petal="custom-mask-modal" class="btn">Scale Open / Slide-Down Close</button>
 
-    <!-- Scale Up Popup -->
-    <div petal-el="popup" petal="scale-popup" petal-anim-open="scale" petal-duration="0.5" petal-slot-opacity="0.5" class="popup">
-      <div petal-el="mask" petal-mask-opacity="0.15" class="mask"></div>
-      <div petal-el="slot" class="slot">
-        <div class="popup-content">
-          <h2>Scale Popup</h2>
-          <p>This popup uses a scale animation (auto-reverses on close).</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-          <button petal-el="close" petal="scale-popup" class="btn btn-close">Close</button>
+        <!-- Slide-right open, fade-out close -->
+        <button petal-el="trigger-open" petal="fade-close-modal" class="btn">Slide-Right Open / Fade-Out Close</button>
+
+        <!-- Crop Animation Modal Trigger -->
+        <button petal-el="trigger-open" petal="crop-modal" class="btn">Open Crop-Up Modal</button>
+      </div>
+
+      <h2 style="margin-top: 3rem">Dropdown Demo - Responsive Breakpoints</h2>
+      <p>Resize your browser to see dropdowns adapt to different screen sizes with 4 breakpoints.</p>
+
+      <div style="width: 100%; margin-top: 2rem">
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-bottom: 2rem">
+          <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem">Breakpoint Guide:</h3>
+          <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: #666">
+            <li><strong>Desktop (992px+):</strong> Hover-activated dropdowns</li>
+            <li><strong>Tablet (768px-991px):</strong> Use <code>petal-visible-tablet="true"</code></li>
+            <li><strong>Mobile Landscape (480px-767px):</strong> Use <code>petal-visible-mobile-landscape="true"</code></li>
+            <li><strong>Mobile (0-479px):</strong> Use <code>petal-visible-mobile="true"</code></li>
+          </ul>
+        </div>
+        <!-- Example 1: Mobile only (0-479px) -->
+        <div style="margin-bottom: 3rem">
+          <h3 style="margin-bottom: 0.5rem">Example 1: Always Open on Mobile (0-479px)</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">This dropdown is always expanded on small mobile screens only.</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-offset="500px" petal-visible-mobile="true" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #e74c3c; color: white; cursor: pointer; border-radius: 4px">Mobile Only (0-479px)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 2: Mobile Landscape (480-767px) -->
+        <div style="margin-bottom: 3rem">
+          <h3 style="margin-bottom: 0.5rem">Example 2: Always Open on Mobile Landscape (480-767px)</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">This dropdown is always expanded on mobile landscape screens.</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-visible-mobile-landscape="true" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #f39c12; color: white; cursor: pointer; border-radius: 4px">Mobile Landscape (480-767px)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option A
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option B
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option C
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 3: Tablet (768-991px) -->
+        <div style="margin-bottom: 3rem">
+          <h3 style="margin-bottom: 0.5rem">Example 3: Always Open on Tablet (768-991px)</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">This dropdown is always expanded on tablet screens.</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-visible-tablet="true" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #9b59b6; color: white; cursor: pointer; border-radius: 4px">Tablet (768-991px)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 4: All breakpoints combined -->
+        <div style="margin-bottom: 3rem">
+          <h3 style="margin-bottom: 0.5rem">Example 4: Combined - Open on All Breakpoints</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">This dropdown is always expanded on mobile, mobile landscape, AND tablet (only collapses on desktop 992px+).</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-visible-mobile="true" petal-visible-mobile-landscape="true" petal-visible-tablet="true" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #27ae60; color: white; cursor: pointer; border-radius: 4px">All Breakpoints (0-991px)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item A
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item B
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item C
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 3rem">Dropdown Demo - Custom Close Animations</h2>
+      <p>Set <code>petal-anim-close</code> independently from <code>petal-anim-open</code> on dropdowns. Without an explicit close animation, the close is automatically the reverse of the open.</p>
+
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem; margin-bottom: 2rem">
+        <!-- Standard Default -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Default</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Opens downward, closes by sliding left</p>
+          <div petal="dropdown-default" petal-dropdown-open-on-hover="true" petal-debug="true" petal-el="dropdown" petal-group="test-group" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #3498db; color: white; cursor: pointer; border-radius: 4px">Default</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide-down open / Slide-left close -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Slide-Down Open / Slide-Left Close</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Opens downward, closes by sliding left</p>
+          <div
+            petal="dropdown-slide-down-open-slide-left-close"
+            petal-el="dropdown"
+            petal-group="test-group"
+            petal-dropdown-open-on-hover="true"
+            petal-visible="true"
+            petal-visible-tablet="false"
+            petal-dropdown-open-on-hover="true"
+            petal-dropdown-open-on-hover-tablet="false"
+            petal-anim-open="slide-down"
+            petal-anim-offset-open="100px"
+            petal-anim-delay-open="1"
+            petal-anim-duration-open="3"
+            petal-anim-duration-close="3"
+            petal-anim-ease-open="none"
+            petal-anim-open-tablet="slide-right"
+            petal-anim-open-mobile-landscape="slide-up"
+            petal-anim-open-mobile="slide-left"
+            petal-anim-close="slide-right"
+            petal-anim-speed-open="500"
+            petal-anim-speed-close="400"
+            style="position: relative"
+          >
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #3498db; color: white; cursor: pointer; border-radius: 4px">Down → Left</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: 2px solid black; border-radius: 4px">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide-right open / Crop-down close -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Slide-Right Open / Crop-Down Close</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Slides in from left, closes with a crop-down clip</p>
+          <div
+            petal-el="dropdown"
+            petal-group="test-group"
+            petal-dropdown-open-on-hover="true"
+            petal-anim-open="slide-right"
+            petal-anim-delay-open="0.1"
+            petal-anim-close="crop-down"
+            petal-anim-delay-close="0.2"
+            petal-anim-delay-close-tablet="0.3"
+            petal-anim-duration-close="0.2"
+            petal-anim-duration-close-tablet="1000"
+            petal-anim-open-speed="500"
+            petal-anim-close-speed="400"
+            style="position: relative"
+          >
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #2ecc71; color: white; cursor: pointer; border-radius: 4px">Right → Crop-Down</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option A
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option B
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option C
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Default (auto-reverse) for comparison -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Slide-Down (Auto-Reverse Close)</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">No close animation set — auto-reverses to slide-up</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open="slide-down" petal-anim-open-speed="500" petal-anim-close-speed="400" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #e74c3c; color: white; cursor: pointer; border-radius: 4px">Down (auto-reverse)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide Down -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Slide Down</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Default animation</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open="slide-down" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #3498db; color: white; cursor: pointer; border-radius: 4px">Slide Down</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide Up -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Slide Up</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Animates upward</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open="slide-up" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #2ecc71; color: white; cursor: pointer; border-radius: 4px">Slide Up</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option A
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option B
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option C
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide Left -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Slide Left</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Animates from right</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open="slide-left" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #f39c12; color: white; cursor: pointer; border-radius: 4px">Slide Left</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide Right -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Slide Right</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Animates from left</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open="slide-right" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #e74c3c; color: white; cursor: pointer; border-radius: 4px">Slide Right</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item X
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item Y
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item Z
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 2rem; margin-bottom: 0.5rem">Crop Animations (Clip-Path Reveal)</h3>
+      <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">
+        New crop animations use CSS clip-path to reveal content without any positional movement. Perfect for smooth, content-focused reveals.
+      </p>
+
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem">
+        <!-- Crop Up -->
+        <div style="flex: 1; min-width: 200px">
+          <h4 style="margin-bottom: 0.5rem; font-size: 1rem">Crop Up</h4>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Reveals upward from bottom</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open="crop-up" petal-anim-open-duration="0.6" petal-anim-open-ease="power2.out" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #1abc9c; color: white; cursor: pointer; border-radius: 4px">Crop Up</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crop Down -->
+        <div style="flex: 1; min-width: 200px">
+          <h4 style="margin-bottom: 0.5rem; font-size: 1rem">Crop Down</h4>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Reveals downward from top</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open="crop-down" petal-anim-open-duration="0.6" petal-anim-open-ease="power2.out" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #16a085; color: white; cursor: pointer; border-radius: 4px">Crop Down</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option A
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option B
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option C
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 2rem; margin-bottom: 0.5rem">Responsive Animation Example</h3>
+      <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">
+        This dropdown changes animation based on screen size: <strong>slide-down</strong> on desktop, <strong>slide-up</strong> on tablet, <strong>slide-left</strong> on mobile landscape, and
+        <strong>slide-right</strong> on mobile. Resize your browser to see the different animations!
+      </p>
+      <div style="margin-bottom: 2rem">
+        <div
+          petal-el="dropdown"
+          petal-dropdown-open-on-hover="true"
+          petal-anim-open="slide-down"
+          petal-anim-open-tablet="slide-up"
+          petal-anim-open-mobile-landscape="slide-left"
+          petal-anim-open-mobile="slide-right"
+          style="position: relative"
+        >
+          <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #9b59b6; color: white; cursor: pointer; border-radius: 4px">Responsive Animations</div>
+          <div petal-el="dropdown-menu">
+            <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+              <div
+                style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                onmouseover="this.style.background='#f0f0f0'"
+                onmouseout="this.style.background='transparent'"
+              >
+                Menu Item 1
+              </div>
+              <div
+                style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                onmouseover="this.style.background='#f0f0f0'"
+                onmouseout="this.style.background='transparent'"
+              >
+                Menu Item 2
+              </div>
+              <div
+                style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                onmouseover="this.style.background='#f0f0f0'"
+                onmouseout="this.style.background='transparent'"
+              >
+                Menu Item 3
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 3rem">Dropdown Demo - Animation Speeds</h2>
+      <p>Hover over these dropdowns to see different animation speeds in action. These control how fast the dropdown animates (not the delay before it opens).</p>
+
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem">
+        <!-- Fast animation -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Fast Animation</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">150ms open, 100ms close</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open-speed="150" petal-anim-close-speed="100" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #3498db; color: white; cursor: pointer; border-radius: 4px">Fast (150/100ms)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Normal animation (default) -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Normal Animation</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">500ms open, 300ms close (default)</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #2ecc71; color: white; cursor: pointer; border-radius: 4px">Normal (500/300ms)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option A
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option B
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option C
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slow animation -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Slow Animation</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">800ms open, 600ms close</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open-speed="800" petal-anim-close-speed="600" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #f39c12; color: white; cursor: pointer; border-radius: 4px">Slow (800/600ms)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Asymmetric animation (slow open, fast close) -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Asymmetric Animation</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">1000ms open, 150ms close</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-anim-open-speed="1000" petal-anim-close-speed="150" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #e74c3c; color: white; cursor: pointer; border-radius: 4px">Asymmetric (1000/150ms)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item X
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item Y
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item Z
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 3rem">Dropdown Demo - Group Coordination</h2>
+      <p>Dropdowns with the same petal-group attribute coordinate with each other. When you hover over one, any other open dropdown in the group closes first, creating a smooth transition.</p>
+
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem; margin-bottom: 3rem">
+        <!-- Group A - Coordinated dropdowns -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Navigation Item 1</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Part of group "nav"</p>
+          <div
+            petal="group-a"
+            petal-el="dropdown"
+            petal-group="nav"
+            petal-anim-open="slide-left"
+            petal-anim-open-duration="1"
+            petal-anim-open-delay="0"
+            petal-anim-open-offset="100%"
+            petal-anim-open-ease="power2.out"
+            petal-dropdown-open-on-hover="true"
+            petal-dropdown-close-delay="200"
+            petal-anim-close-speed="600"
+            style="position: relative"
+          >
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #3498db; color: white; cursor: pointer; border-radius: 4px">Products</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Product A
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Product B
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Product C
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Navigation Item 2</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Part of group "nav"</p>
+          <div
+            petal-el="dropdown"
+            petal-group="nav"
+            petal-dropdown-open-on-hover="true"
+            petal-dropdown-open-delay="0"
+            petal-dropdown-close-delay="200"
+            petal-anim-open-speed="600"
+            petal-anim-close-speed="600"
+            style="position: relative"
+          >
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #2ecc71; color: white; cursor: pointer; border-radius: 4px">Services</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Consulting
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Support
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Training
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Navigation Item 3</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Part of group "nav"</p>
+          <div
+            petal-el="dropdown"
+            petal-group="nav"
+            petal-dropdown-open-on-hover="true"
+            petal-dropdown-open-delay="0"
+            petal-dropdown-close-delay="200"
+            petal-anim-open-speed="600"
+            petal-anim-close-speed="600"
+            style="position: relative"
+          >
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #f39c12; color: white; cursor: pointer; border-radius: 4px">Company</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  About Us
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Careers
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Contact
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Navigation Item 4</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Part of group "nav"</p>
+          <div
+            petal-el="dropdown"
+            petal-group="nav"
+            petal-dropdown-open-on-hover="true"
+            petal-dropdown-open-delay="0"
+            petal-dropdown-close-delay="200"
+            petal-anim-open-speed="600"
+            petal-anim-close-speed="600"
+            style="position: relative"
+          >
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #9b59b6; color: white; cursor: pointer; border-radius: 4px">Resources</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Documentation
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Blog
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  FAQ
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1rem">How Group Coordination Works:</h3>
+        <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: #666; line-height: 1.6">
+          <li>All dropdowns above share <code>petal-group="nav"</code></li>
+          <li>When you hover from one to another, the first closes before the second opens</li>
+          <li>Each dropdown has <strong>600ms animations</strong> and <strong>200ms close delay</strong> to make the effect more visible</li>
+          <li>The system calculates the total close time (delay + animation) and waits before opening the next dropdown</li>
+          <li>This creates a smooth, sequential navigation experience with no overlapping animations</li>
+          <li><strong>Try hovering quickly between them</strong> to see the coordination in action!</li>
+        </ul>
+      </div>
+
+      <h2 style="margin-top: 3rem">Dropdown Demo - Nested Dropdowns</h2>
+      <p>Dropdowns can be nested inside each other. Click the inner dropdown's close button - only the inner dropdown closes, not the outer one.</p>
+
+      <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem; margin-top: 2rem">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1rem">How It Works:</h3>
+        <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: #666; line-height: 1.6">
+          <li>The outer dropdown (blue) contains an inner dropdown (green) in its menu</li>
+          <li>Clicking the inner dropdown's close button only closes the inner dropdown</li>
+          <li>Event propagation is stopped to prevent the outer dropdown from closing</li>
+          <li>Each dropdown operates independently with its own state</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom: 3rem">
+        <div style="position: relative; display: inline-block">
+          <!-- Outer Dropdown -->
+          <div petal-el="dropdown" petal="outer-dropdown" petal-dropdown-open-on-hover="false" style="position: relative">
+            <div petal-el="dropdown-toggle" petal="outer-dropdown" style="padding: 1rem 2rem; background: #3498db; color: white; cursor: pointer; border-radius: 4px">Open Outer Dropdown</div>
+            <div petal-el="dropdown-menu" petal="outer-dropdown">
+              <div
+                petal-el="dropdown-drawer"
+                petal="outer-dropdown"
+                style="padding: 1.5rem; min-width: 300px; background: white; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); border-radius: 4px; margin-top: 0.5rem"
+              >
+                <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee">
+                  <strong>Outer Dropdown Content</strong>
+                  <p style="margin: 0.5rem 0; font-size: 0.9rem; color: #666">This is the outer dropdown. Try opening the inner dropdown below.</p>
+                </div>
+
+                <!-- Inner Dropdown (Nested) -->
+                <div petal-el="dropdown" petal="inner-dropdown" petal-dropdown-open-on-hover="false" style="position: relative">
+                  <div petal-el="dropdown-toggle" petal="inner-dropdown" style="padding: 0.75rem 1.5rem; background: #2ecc71; color: white; cursor: pointer; border-radius: 4px; font-size: 0.9rem">
+                    Open Inner Dropdown
+                  </div>
+                  <div petal-el="dropdown-menu" petal="inner-dropdown">
+                    <div
+                      petal-el="dropdown-drawer"
+                      petal="inner-dropdown"
+                      style="padding: 1rem; min-width: 200px; background: #f8f9fa; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem"
+                    >
+                      <div style="margin-bottom: 0.75rem">
+                        <strong style="font-size: 0.9rem">Inner Dropdown</strong>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #666">Click the close button below.</p>
+                      </div>
+                      <div style="padding: 0.5rem; background: white; border-radius: 4px; margin-bottom: 0.5rem; font-size: 0.85rem">Menu Item 1</div>
+                      <div style="padding: 0.5rem; background: white; border-radius: 4px; margin-bottom: 0.5rem; font-size: 0.85rem">Menu Item 2</div>
+                      <div style="padding: 0.5rem; background: white; border-radius: 4px; margin-bottom: 0.75rem; font-size: 0.85rem">Menu Item 3</div>
+                      <button
+                        petal-el="trigger-close"
+                        petal="inner-dropdown"
+                        style="padding: 0.5rem 1rem; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; width: 100%"
+                      >
+                        Close Inner Only
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee">
+                  <button
+                    petal-el="trigger-close"
+                    petal="outer-dropdown"
+                    style="padding: 0.5rem 1rem; background: #95a5a6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; width: 100%"
+                  >
+                    Close Outer Dropdown
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 3rem">Dropdown Demo - Open & Close Delays</h2>
+      <p>Hover over these dropdowns to see different open and close delay timings in action. These control how long before the animation starts (not the animation speed itself).</p>
+
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem">
+        <!-- No delay -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">No Delay</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">Opens and closes instantly</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-dropdown-open-delay="0" petal-dropdown-close-delay="0" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #3498db; color: white; cursor: pointer; border-radius: 4px">Instant (0ms)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Menu Item 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fast delay -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Fast Delay</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">200ms open, 100ms close</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-dropdown-open-delay="200" petal-dropdown-close-delay="100" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #2ecc71; color: white; cursor: pointer; border-radius: 4px">Fast (200/100ms)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option A
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option B
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Option C
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medium delay -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Medium Delay</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">400ms open, 300ms close</p>
+          <div
+            petal-group="delay-demo"
+            petal-el="dropdown"
+            petal-dropdown-open-on-hover="true"
+            petal-dropdown-open-on-hover-tablet="false"
+            petal-anim-open="slide-left"
+            petal-anim-open-tablet="slide-down"
+            petal-anim-open-mobile="crop-up"
+            petal-dropdown-open-delay="400"
+            petal-dropdown-close-delay="300"
+            style="position: relative"
+          >
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #f39c12; color: white; cursor: pointer; border-radius: 4px">Medium (400/300ms)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 1
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 2
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Choice 3
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Long delay -->
+        <div style="flex: 1; min-width: 200px">
+          <h3 style="margin-bottom: 0.5rem; font-size: 1rem">Long Delay</h3>
+          <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666">800ms open, 600ms close</p>
+          <div petal-el="dropdown" petal-dropdown-open-on-hover="true" petal-dropdown-open-delay="800" petal-dropdown-close-delay="600" style="position: relative">
+            <div petal-el="dropdown-toggle" style="padding: 1rem 2rem; background: #e74c3c; color: white; cursor: pointer; border-radius: 4px">Slow (800/600ms)</div>
+            <div petal-el="dropdown-menu">
+              <div petal-el="dropdown-drawer" style="padding: 1rem; min-width: 200px; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; margin-top: 0.5rem">
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item X
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item Y
+                </div>
+                <div
+                  style="padding: 0.5rem; cursor: pointer; border-radius: 4px; transition: background 0.2s"
+                  onmouseover="this.style.background='#f0f0f0'"
+                  onmouseout="this.style.background='transparent'"
+                >
+                  Item Z
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Slide Down Popup -->
-    <div petal-el="popup" petal="slide-down-popup" petal-anim-open="slide-down" petal-duration="0.6" class="popup">
-      <div petal-el="mask" petal-mask-opacity="0.2" class="mask"></div>
-      <div petal-el="slot" class="slot">
-        <div class="popup-content">
-          <h2>Slide Down Popup</h2>
-          <p>This popup slides down from the top when opening, slides up to the top when closing.</p>
-          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-          <button petal-el="close" petal="slide-down-popup" class="btn btn-close">Close</button>
+    <!-- Center Modal -->
+    <div petal-el="modal" petal="center-modal" petal-anim-open="scale-in" petal-modal-type="center" petal-overlay-opacity="0.15" petal-duration="0.5" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot">
+        <div class="modal-content">
+          <h2>Center Modal</h2>
+          <p>This modal uses the center type (default) with a scale animation.</p>
+          <p>This close button works without a name attribute - it automatically detects its parent modal!</p>
+          <button petal-el="trigger-close" class="btn btn-close">Close</button>
         </div>
       </div>
     </div>
 
-    <!-- Slide Left Popup -->
-    <div petal-el="popup" petal="slide-left-popup" petal-anim-open="slide-left" petal-duration="0.6" class="popup">
-      <div petal-el="mask" petal-mask-opacity="0.2" class="mask"></div>
-      <div petal-el="slot" class="slot">
-        <div class="popup-content">
-          <h2>Slide Left Popup</h2>
-          <p>This popup slides in from the left when opening, slides up to the top when closing.</p>
-          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-          <button petal-el="close" petal="slide-left-popup" class="btn btn-close">Close</button>
+    <!-- Left Modal -->
+    <div petal-el="modal" petal="left-modal" petal-anim-open="slide-right" petal-anim-close="slide-right" petal-modal-type="left" petal-overlay-opacity="0.15" petal-duration="0.5" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot modal-left" style="margin-right: auto; margin-left: 0">
+        <div class="modal-content">
+          <h2>Left Modal</h2>
+          <p>This modal slides in from the left edge of the screen and takes up the full height.</p>
+          <p>Perfect for side panels, navigation drawers, or filter panels.</p>
+          <button petal-el="trigger-close" class="btn btn-close">Close</button>
         </div>
       </div>
     </div>
 
-    <!-- Responsive Popup (Different animations for mobile/desktop) -->
-    <div petal-el="popup" petal="responsive-popup" petal-anim-open="scale" petal-anim-open-mobile="slide-up" petal-duration="0.5" class="popup">
-      <div petal-el="mask" petal-mask-opacity="0.3" class="mask"></div>
-      <div petal-el="slot" class="slot">
-        <div class="popup-content">
-          <h2>Responsive Popup</h2>
-          <p>This popup uses scale on desktop and slide-up (from bottom) on mobile.</p>
+    <!-- Right Modal -->
+    <div petal-el="modal" petal="right-modal" petal-anim-open="slide-left" petal-modal-type="right" petal-overlay-opacity="0.15" petal-duration="0.5" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot modal-right" style="margin-left: auto; margin-right: 0">
+        <div class="modal-content">
+          <h2>Right Modal</h2>
+          <p>This modal slides in from the right edge of the screen and takes up the full height.</p>
+          <p>Great for shopping carts, settings panels, or notification centers.</p>
+          <button petal-el="trigger-close" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Modal -->
+    <div petal-el="modal" petal="top-modal" petal-anim-open="slide-down" petal-modal-type="top" petal-overlay-opacity="0.15" petal-duration="0.5" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot modal-top" style="margin-bottom: auto; margin-top: 0">
+        <div class="modal-content">
+          <h2>Top Modal</h2>
+          <p>This modal slides down from the top edge of the screen and takes up the full width.</p>
+          <p>Ideal for notifications, alerts, or header announcements.</p>
+          <button petal-el="trigger-close" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Modal -->
+    <div petal-el="modal" petal="bottom-modal" petal-anim-open="slide-up" petal-modal-type="bottom" petal-overlay-opacity="0.15" petal-duration="0.5" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot modal-bottom" style="margin-top: auto; margin-bottom: 0">
+        <div class="modal-content">
+          <h2>Bottom Modal</h2>
+          <p>This modal slides up from the bottom edge of the screen and takes up the full width.</p>
+          <p>Perfect for mobile-style bottom sheets, action menus, or media players.</p>
+          <button petal-el="trigger-close" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Responsive Modal (Different animations for mobile/desktop) -->
+    <div petal-el="modal" petal="responsive-modal" petal-anim-open="scale" petal-anim-open-mobile="slide-up" petal-overlay-opacity="0.3" petal-duration="0.5" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot">
+        <div class="modal-content">
+          <h2>Responsive Modal</h2>
+          <p>This modal uses scale on desktop and slide-up (from bottom) on mobile.</p>
           <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-          <button petal-el="close" petal="responsive-popup" class="btn btn-close">Close</button>
+          <button petal-el="trigger-close" petal="responsive-modal" class="btn btn-close">Close</button>
         </div>
       </div>
     </div>
 
-    <!-- Different Open/Close Animations -->
-    <div petal-el="popup" petal="custom-mask-popup" petal-anim-open="scale" petal-anim-close="slide-up" petal-duration="0.5" class="popup">
-      <div petal-el="mask" petal-mask-opacity="0.6" class="mask"></div>
-      <div petal-el="slot" class="slot">
-        <div class="popup-content">
-          <h2>Different Open/Close Animations</h2>
-          <p>This popup scales when opening and slides down (to the bottom) when closing!</p>
-          <p>Darker background mask (opacity: 0.6).</p>
-          <button petal-el="close" petal="custom-mask-popup" class="btn btn-close">Close</button>
+    <!-- Scale open / Slide-down close -->
+    <div petal-el="modal" petal="custom-mask-modal" petal-anim-open="scale" petal-anim-close="slide-down" petal-overlay-opacity="0.6" petal-duration="0.5" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot">
+        <div class="modal-content">
+          <h2>Scale Open / Slide-Down Close</h2>
+          <p>Opens with a <strong>scale</strong> animation and closes by <strong>sliding down</strong> off the bottom of the screen.</p>
+          <p style="margin-top: 1rem; padding: 0.75rem; background: #e8f5e9; border-radius: 4px; font-size: 0.9rem">
+            <strong>Attributes:</strong> <code>petal-anim-open="scale"</code> <code>petal-anim-close="slide-down"</code>
+          </p>
+          <button petal-el="trigger-close" petal="custom-mask-modal" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide-right open / Fade-out close -->
+    <div petal-el="modal" petal="fade-close-modal" petal-anim-open="slide-right" petal-anim-close="fade-out" petal-overlay-opacity="0.4" petal-duration="0.5" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot">
+        <div class="modal-content">
+          <h2>Slide-Right Open / Fade-Out Close</h2>
+          <p>Enters by <strong>sliding in from the left</strong> and disappears with a <strong>fade-out</strong> on close.</p>
+          <p style="margin-top: 1rem; padding: 0.75rem; background: #e3f2fd; border-radius: 4px; font-size: 0.9rem">
+            <strong>Attributes:</strong> <code>petal-anim-open="slide-right"</code> <code>petal-anim-close="fade-out"</code>
+          </p>
+          <button petal-el="trigger-close" petal="fade-close-modal" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crop Animation Modal -->
+    <div petal-el="modal" petal="crop-modal" petal-anim-open="crop-up" petal-anim-open-duration="0.8" petal-anim-open-ease="power2.out" petal-overlay-opacity="0.25" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot">
+        <div class="modal-content">
+          <h2>Crop-Up Animation</h2>
+          <p>This modal uses the new crop-up animation with a custom easing (power2.out) and duration (0.8s).</p>
+          <p>The crop animations use clip-path for a smooth reveal effect without positional movement.</p>
+          <button petal-el="trigger-close" petal="crop-modal" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Locked Modal (default behavior) -->
+    <div petal-el="modal" petal="scroll-locked-modal" petal-modal-type="center" petal-overlay-opacity="0.3" petal-duration="0.4" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot">
+        <div class="modal-content">
+          <h2>Scroll Locked Modal</h2>
+          <p>This modal locks scrolling on the background page (default behavior).</p>
+          <p>Try scrolling with your mouse wheel or trackpad - the page behind this modal won't move!</p>
+          <p style="margin-top: 1.5rem; padding: 1rem; background: #e3f2fd; border-radius: 4px; font-size: 0.9rem">
+            <strong>💡 Tip:</strong> This is the default behavior. All modals lock scroll unless you explicitly set <code>petal-lock-scroll-on-open="false"</code>.
+          </p>
+          <button petal-el="trigger-close" class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Unlocked Modal -->
+    <div petal-el="modal" petal="scroll-unlocked-modal" petal-modal-type="center" petal-lock-scroll-on-open="false" petal-overlay-opacity="0.3" petal-duration="0.4" class="modal">
+      <div petal-el="overlay" class="mask"></div>
+      <div petal-el="dialog" class="slot">
+        <div class="modal-content">
+          <h2>Scroll Unlocked Modal</h2>
+          <p>This modal does NOT lock scrolling - the background page can still be scrolled.</p>
+          <p>Try scrolling with your mouse wheel or trackpad - the page behind this modal will move!</p>
+          <p style="margin-top: 1.5rem; padding: 1rem; background: #fff3e0; border-radius: 4px; font-size: 0.9rem">
+            <strong>⚠️ Note:</strong> This modal has <code>petal-lock-scroll-on-open="false"</code> to disable scroll locking.
+          </p>
+          <button petal-el="trigger-close" class="btn btn-close">Close</button>
         </div>
       </div>
     </div>
@@ -98,13 +1393,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
     <!-- Load Petal -->
-    <script src="petal.js"></script>
+    <script src="/petal.js"></script>
 
     <!-- Initialize Petal -->
     <script>
-      // Initialize all popups when page loads
-      if (window.petal && window.petal.initializeAllPopups) {
-        window.petal.initializeAllPopups();
+      // Initialize all modals, banners, and dropdowns when page loads
+      if (window.petal) {
+        if (window.petal.initializeAllModals) {
+          window.petal.initializeAllModals();
+        }
+        if (window.petal.initializeBanner) {
+          window.petal.initializeBanner();
+        }
+        if (window.petal.initializeDropdowns) {
+          window.petal.initializeDropdowns();
+        }
       }
     </script>
   </body>

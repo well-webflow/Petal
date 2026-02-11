@@ -17,30 +17,30 @@ export class MissingNameError extends PetalError {
   }
 }
 
-export class MissingPopupError extends PetalError {
-  constructor(popupName: string, trigger: Element) {
-    super(`Popup with name "${popupName}" not found`, trigger, popupName);
-    this.name = "MissingPopupError";
+export class MissingModalError extends PetalError {
+  constructor(modalName: string, trigger: Element) {
+    super(`Modal with name "${modalName}" not found`, trigger, modalName);
+    this.name = "MissingModalError";
   }
 }
 
 export class MissingTriggerError extends PetalError {
-  constructor(popupName: string, trigger: Element) {
-    super(`Trigger error for "${popupName}"`, trigger, popupName);
+  constructor(modalName: string, trigger: Element) {
+    super(`Trigger error for "${modalName}"`, trigger, modalName);
     this.name = "MissingTriggerError";
   }
 }
 
 export class MissingMaskError extends PetalError {
-  constructor(popupName: string, trigger: Element) {
-    super(`Mask not found for "${popupName}"`, trigger, popupName);
+  constructor(modalName: string, trigger: Element) {
+    super(`Mask not found for "${modalName}"`, trigger, modalName);
     this.name = "MissingMaskError";
   }
 }
 
 export class MissingSlotError extends PetalError {
-  constructor(popupName: string, trigger: Element) {
-    super(`Slot not found for "${popupName}"`, trigger, popupName);
+  constructor(modalName: string, trigger: Element) {
+    super(`Slot not found for "${modalName}"`, trigger, modalName);
     this.name = "MissingSlotError";
   }
 }
