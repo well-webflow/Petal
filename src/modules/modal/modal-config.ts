@@ -4,17 +4,22 @@
  * Handles parsing modal configuration from HTML attributes.
  */
 
-import { AnimationOptions, getAnimationConfig } from "../../lib/animations";
-import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG, ATTR_PETAL_OVERLAY_OPACITY, ATTR_PETAL_MODAL_TYPE, ATTR_PETAL_LOCK_SCROLL_ON_OPEN } from "../../lib/attributes";
-import { PetalSetting } from "../../lib/setting";
+import {
+  ATTR_PETAL_NAME,
+  ATTR_PETAL_DEBUG,
+  ATTR_PETAL_OVERLAY_OPACITY,
+  ATTR_PETAL_MODAL_TYPE,
+  ATTR_PETAL_LOCK_SCROLL_ON_OPEN,
+  ATTR_PETAL_ANIM_OPEN,
+  ATTR_PETAL_ANIM_CLOSE,
+} from "../../lib/attributes";
 
 export interface ModalConfig {
   name: string;
   debug: boolean;
-  maskOpacity: number;
-  animOpen: PetalSetting<AnimationOptions>;
-  animClose: PetalSetting<AnimationOptions>;
   lockScrollOnOpen: boolean;
+  animOpen?: string | null;
+  animClose?: string | null;
 }
 
 /**
@@ -23,19 +28,17 @@ export interface ModalConfig {
 export function parseModalConfig(modal: Element): ModalConfig {
   const name = modal.getAttribute(ATTR_PETAL_NAME) || "unknown";
   const debug = modal.getAttribute(ATTR_PETAL_DEBUG) === "true";
-  const maskOpacity = parseFloat(modal.getAttribute(ATTR_PETAL_OVERLAY_OPACITY) || "0.15");
   const lockScrollOnOpen = modal.getAttribute(ATTR_PETAL_LOCK_SCROLL_ON_OPEN) !== "false"; // Default to true
 
-  const animOpen = getAnimationConfig(modal, "open");
-  const animClose = getAnimationConfig(modal, "close");
+  const animOpen = modal.getAttribute(ATTR_PETAL_ANIM_OPEN);
+  const animClose = modal.getAttribute(ATTR_PETAL_ANIM_CLOSE);
 
   return {
     name,
     debug,
-    maskOpacity,
+    lockScrollOnOpen,
     animOpen,
     animClose,
-    lockScrollOnOpen,
   };
 }
 

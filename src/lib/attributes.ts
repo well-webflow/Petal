@@ -21,16 +21,10 @@ export const ATTR_PETAL_SESSION_TTL = "petal-session-ttl"; // Time to keep user 
 export const ATTR_PETAL_VISIBLE = "petal-visible";
 
 /**-------------------------*
- * ANIMATION
+ * ANIMATIONS
  *--------------------------*/
-
-// IMPORTANT: NEED TO UPDATE SO ANIM NAME GOES LAST!
-
-export const ATTR_PETAL_ANIM = "petal-anim";
-export const ATTR_PETAL_ANIM_DURATION = "petal-anim-duration";
-export const ATTR_PETAL_ANIM_DELAY = "petal-anim-delay";
-export const ATTR_PETAL_ANIM_OFFSET = "petal-anim-offset";
-export const ATTR_PETAL_ANIM_EASE = "petal-anim-ease";
+export const ATTR_PETAL_ANIM_OPEN = "petal-anim-open";
+export const ATTR_PETAL_ANIM_CLOSE = "petal-anim-close";
 
 /**-------------------------*
  * BREAKPOINTS

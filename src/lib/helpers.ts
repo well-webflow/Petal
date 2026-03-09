@@ -1,14 +1,14 @@
 import { ATTR_PETAL_ELEMENT, ATTR_PETAL_NAME } from "./attributes";
 
-export function getAllPetalElementsOfType(el: string): NodeListOf<Element> {
+export function getAllPetalElementsOfType(el: string): NodeListOf<HTMLElement> {
   return document.querySelectorAll(`[${ATTR_PETAL_ELEMENT}='${el}']`);
 }
 
-export function getPetalElementInParent(parent: Element, el: string): HTMLElement | null {
+export function getPetalElementInParent(parent: HTMLElement, el: string): HTMLElement | null {
   return parent.querySelector(`[${ATTR_PETAL_ELEMENT}='${el}']`);
 }
 
-export function getPetalElementsInParent(parent: Element, el: string): NodeListOf<HTMLElement> | null {
+export function getPetalElementsInParent(parent: HTMLElement, el: string): NodeListOf<HTMLElement> | null {
   return parent.querySelectorAll(`[${ATTR_PETAL_ELEMENT}='${el}']`);
 }
 
@@ -32,7 +32,7 @@ export function findPetalElementsByName(name: string | null, el: string): NodeLi
   return document.querySelectorAll(`[${ATTR_PETAL_NAME}='${name}'][${ATTR_PETAL_ELEMENT}='${el}']`);
 }
 
-export function findPetalElementByNameOrInParent(parent: Element, name: string | null, el: string): HTMLElement | null {
+export function findPetalElementByNameOrInParent(parent: HTMLElement, name: string | null, el: string): HTMLElement | null {
   // First try to find by name globally
   const globalMatch = findPetalElementByName(name, el);
   if (globalMatch) return globalMatch;
@@ -41,7 +41,7 @@ export function findPetalElementByNameOrInParent(parent: Element, name: string |
   return getPetalElementInParent(parent, el);
 }
 
-export function findPetalElementsByNameOrInParent(parent: Element, name: string | null, el: string): NodeListOf<HTMLElement> | null {
+export function findPetalElementsByNameOrInParent(parent: HTMLElement, name: string | null, el: string): NodeListOf<HTMLElement> | null {
   // First try to find by name globally
   const globalMatch = findPetalElementsByName(name, el);
   if (globalMatch && globalMatch.length > 0) return globalMatch;
@@ -56,7 +56,7 @@ export function findPetalElementsByNameOrInParent(parent: Element, name: string 
  * @param petalElType The petal-el type to search for (e.g., 'modal', 'dropdown')
  * @returns The closest parent with the specified petal-el type, or null if none found
  */
-export function findClosestPetalParent(element: Element, petalElType: string): HTMLElement | null {
+export function findClosestPetalParent(element: HTMLElement, petalElType: string): HTMLElement | null {
   let current = element.parentElement;
 
   while (current) {
