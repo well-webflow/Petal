@@ -4,15 +4,7 @@
  * Handles parsing modal configuration from HTML attributes.
  */
 
-import {
-  ATTR_PETAL_NAME,
-  ATTR_PETAL_DEBUG,
-  ATTR_PETAL_OVERLAY_OPACITY,
-  ATTR_PETAL_MODAL_TYPE,
-  ATTR_PETAL_LOCK_SCROLL_ON_OPEN,
-  ATTR_PETAL_ANIM_OPEN,
-  ATTR_PETAL_ANIM_CLOSE,
-} from "../../lib/attributes";
+import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG, ATTR_PETAL_LOCK_SCROLL_ON_OPEN, ATTR_PETAL_ANIM_OPEN, ATTR_PETAL_ANIM_CLOSE } from "../../lib/attributes";
 
 export interface ModalConfig {
   name: string;

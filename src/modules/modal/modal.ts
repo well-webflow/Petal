@@ -88,6 +88,7 @@ class ModalController {
  * Initialize all modals on the page
  */
 export function initializeAllModals(): void {
+  console.log("hey!");
   const modals = getAllPetalElementsOfType(ATTR_PETAL_MODAL);
 
   modals.forEach((modal, index) => {
