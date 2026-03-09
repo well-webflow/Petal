@@ -2,11 +2,13 @@
 const webpack = require('webpack');
 const path = require('path');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
     entry: "./src/petal.ts",
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'petal.js',  // Output bundle file
+        filename: isProduction ? 'petal.min.js' : 'petal.js',  // Output bundle file
         library: 'petal',   // Name of the global variable if your package is used in the browser
         libraryTarget: 'umd',   // Universal module definition, for browser and Node.js
         globalObject: 'this',   // Ensures compatibility in different environments
@@ -31,7 +33,10 @@ module.exports = {
         // Any dependencies you don't want to include in your bundle
         'some-other-external': 'commonjs2 some-other-external',
     },
-    mode: 'development',  // Can be 'development' for debugging
+    mode: isProduction ? 'production' : 'development',
+    optimization: {
+        minimize: isProduction,
+    },
     resolve: {
         extensions: ['.js', '.ts', '.json'], // Add file extensions you use
     },
