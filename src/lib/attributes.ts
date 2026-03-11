@@ -27,6 +27,14 @@ export const ATTR_PETAL_ANIM_OPEN = "petal-anim-open";
 export const ATTR_PETAL_ANIM_CLOSE = "petal-anim-close";
 
 /**-------------------------*
+ * TRIGGERS
+ *--------------------------*/
+
+export const ATTR_PETAL_TRIGGER = "petal-trigger";
+export const ATTR_PETAL_TRIGGER_OPEN = "petal-trigger-open";
+export const ATTR_PETAL_TRIGGER_CLOSE = "petal-trigger-close";
+
+/**-------------------------*
  * BREAKPOINTS
  *--------------------------*/
 export const ATTR_PETAL_HIDE_DESKTOP = "petal-hide-desktop";
@@ -41,13 +49,6 @@ export const ATTR_PETAL_HIDE_MOBILE = "petal-hide-mobile";
 export const ATTR_PETAL_OVERLAY = "overlay";
 export const ATTR_PETAL_OVERLAY_OPACITY = "petal-overlay-opacity";
 export const ATTR_PETAL_OVERLAY_CLOSE = "petal-overlay-close";
-
-/**-------------------------*
- * OPEN & CLOSE
- *--------------------------*/
-
-export const ATTR_PETAL_TRIGGER_OPEN = "trigger-open";
-export const ATTR_PETAL_TRIGGER_CLOSE = "trigger-close";
 
 /**-------------------------*
  * MODAL

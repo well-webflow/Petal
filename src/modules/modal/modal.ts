@@ -14,8 +14,8 @@
  * - petal-el="dialog" - Dialog content (required)
  * - petal-el="overlay" - Background overlay (optional)
  * - petal="name" - Modal identifier (optional)
- * - petal-el="open" - Open trigger (requires petal="name" on trigger if outside modal)
- * - petal-el="trigger-close" - Close trigger (auto-detects parent modal if no name)
+ * - petal-trigger="open" - Open trigger (requires petal="name" on trigger if outside modal)
+ * - petal-trigger="close" - Close trigger (auto-detects parent modal if no name)
  * - petal-overlay-close="true" - Enable overlay click-to-close (default: true)
  * - petal-overlay-opacity="0.15" - Overlay opacity (default: 0.15)
  * - petal-modal-type="center|left|right|top|bottom" - Modal position type (default: center)
@@ -23,8 +23,8 @@
  */
 declare const Webflow: any;
 
-import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER_CLOSE, ATTR_PETAL_DIALOG, ATTR_PETAL_TRIGGER_OPEN, ATTR_PETAL_ANIM_OPEN, ATTR_PETAL_ANIM_CLOSE } from "../../lib/attributes";
-import { findPetalElementByNameOrInParent, findPetalElementsByNameOrInParent, getAllPetalElementsOfType, findClosestPetalParent } from "../../lib/helpers";
+import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_DIALOG, ATTR_PETAL_TRIGGER } from "../../lib/attributes";
+import { findPetalElementByNameOrInParent, getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent } from "../../lib/helpers";
 import { parseModalConfig, logConfig, ModalConfig } from "./modal-config";
 import { debug, debugElements } from "../../lib/debug";
 import { storeClosedState } from "../../lib/memory";
@@ -88,7 +88,6 @@ class ModalController {
  * Initialize all modals on the page
  */
 export function initializeAllModals(): void {
-  console.log("hey!");
   const modals = getAllPetalElementsOfType(ATTR_PETAL_MODAL);
 
   modals.forEach((modal, index) => {
@@ -105,8 +104,8 @@ export function initializeAllModals(): void {
     // Element References
     // ===========================
     const dialog = findPetalElementByNameOrInParent(modal, name, ATTR_PETAL_DIALOG);
-    const openTriggers = findPetalElementsByNameOrInParent(modal, name, ATTR_PETAL_TRIGGER_OPEN);
-    const closeTriggers = findPetalElementsByNameOrInParent(modal, name, ATTR_PETAL_TRIGGER_CLOSE);
+    const openTriggers = findTriggersByNameOrInParent(modal, name, "open");
+    const closeTriggers = findTriggersByNameOrInParent(modal, name, "close");
 
     debugElements(config.debug, "MODAL", "open trigger", openTriggers);
     debugElements(config.debug, "MODAL", "close trigger", closeTriggers);
@@ -146,7 +145,7 @@ export function initializeAllModals(): void {
 
     // Find and attach close triggers without names (that are children of this modal)
     if (!name) {
-      const allCloseTriggers = [...Array.from(getAllPetalElementsOfType(ATTR_PETAL_TRIGGER_CLOSE))];
+      const allCloseTriggers = [...Array.from(document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="close"]`))];
       allCloseTriggers.forEach((trigger) => {
         // Check if this close trigger doesn't have a name and is a child of this modal
         const triggerName = trigger.getAttribute(ATTR_PETAL_NAME);
