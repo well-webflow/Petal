@@ -92,12 +92,15 @@ export function findTriggersByType(triggerType: string, name?: string | null): N
  */
 export function findTriggersByNameOrInParent(parent: HTMLElement, name: string | null, triggerType: string): NodeListOf<HTMLElement> {
   // First try to find by name globally
+  console.log(`Searching for triggers of type "${triggerType}" with name "${name}"`);
   if (name) {
     const globalMatch = document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="${triggerType}"][${ATTR_PETAL_NAME}="${name}"]`);
+    console.log(`Global match for triggers of type "${triggerType}" with name "${name}":`, globalMatch);
     if (globalMatch && globalMatch.length > 0) return globalMatch;
   }
 
   // If no name match, try to find within the parent
+  console.log(`Searching for triggers of type "${triggerType}" within parent:`, parent);
   return parent.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="${triggerType}"]`);
 }
 
