@@ -80,6 +80,7 @@ class ModalController {
 
     // Trigger the GSAP animation in Webflow
     const wfIx = Webflow.require("ix3");
+    console.log(`[DEBUG] Modal "${this.config.name}" - Closing with animation "${this.config.animClose}"`);
     wfIx.emit(this.config.animClose);
   };
 }
