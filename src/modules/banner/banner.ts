@@ -1,7 +1,7 @@
 import { debug, debugElements } from "../../lib/debug";
 import { ATTR_PETAL_BANNER, ATTR_PETAL_BANNER_CLOSE, ATTR_PETAL_NAME, ATTR_PETAL_ELEMENT } from "../../lib/attributes";
 import { getAllPetalElementsOfType } from "../../lib/helpers";
-import { storeClosedState, checkClosedState, clearClosedState, storeMemoryWithExpiration, checkMemory, clearMemory } from "../../lib/memory";
+import { clearClosedState, storeMemoryWithExpiration, checkMemory, clearMemory } from "../../lib/memory";
 import { parseBannerConfig } from "./banner-config";
 
 export function initializeBanner() {
@@ -43,12 +43,6 @@ export function initializeBanner() {
           shouldHide = true;
           debug(config.debug, "BANNER", `Banner "${name}" is in memory - hiding`);
         }
-      } else {
-        // Fall back to session storage check (default 30 minutes)
-        if (checkClosedState("banner", name, 30)) {
-          shouldHide = true;
-          debug(config.debug, "BANNER", `Banner "${name}" was closed in this session - hiding`);
-        }
       }
 
       if (shouldHide) {
@@ -65,10 +59,6 @@ export function initializeBanner() {
           if (config.memory.enabled && config.memory.expires) {
             storeMemoryWithExpiration("banner", name, config.memory.expires);
             debug(config.debug, "BANNER", `Banner "${name}" stored in memory until ${config.memory.expires.toISOString()}`);
-          } else {
-            // Fall back to session storage
-            storeClosedState("banner", name);
-            debug(config.debug, "BANNER", `Banner "${name}" stored in session`);
           }
         });
       });
