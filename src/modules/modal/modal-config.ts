@@ -4,7 +4,7 @@
  * Handles parsing modal configuration from HTML attributes.
  */
 
-import { parseTime } from "../../lib/helpers";
+import { parseTime, parseBoolean } from "../../lib/helpers";
 import {
   ATTR_PETAL_NAME,
   ATTR_PETAL_DEBUG,
@@ -36,17 +36,17 @@ export interface ModalConfig {
  */
 export function parseModalConfig(modal: Element): ModalConfig {
   const name = modal.getAttribute(ATTR_PETAL_NAME) || "unknown";
-  const debug = modal.getAttribute(ATTR_PETAL_DEBUG) === "true";
+  const debug = parseBoolean(modal.getAttribute(ATTR_PETAL_DEBUG)) ?? false;
 
-  const lockScroll = modal.getAttribute(ATTR_PETAL_LOCK_SCROLL_ON_OPEN) !== "false"; // Default to true
+  const lockScroll = parseBoolean(modal.getAttribute(ATTR_PETAL_LOCK_SCROLL_ON_OPEN)) ?? true; // Default to true
 
   const animOpen = modal.getAttribute(ATTR_PETAL_ANIM_OPEN);
   const animClose = modal.getAttribute(ATTR_PETAL_ANIM_CLOSE);
 
-  const autoOpen = modal.getAttribute(ATTR_PETAL_AUTO_OPEN) === "true";
+  const autoOpen = parseBoolean(modal.getAttribute(ATTR_PETAL_AUTO_OPEN)) ?? false;
   const autoOpenDelay = parseTime(modal.getAttribute(ATTR_PETAL_AUTO_OPEN_DELAY));
 
-  const memoryEnabled = modal.getAttribute(ATTR_PETAL_MEMORY) === "true";
+  const memoryEnabled = parseBoolean(modal.getAttribute(ATTR_PETAL_MEMORY)) ?? false;
   const memoryExpires = parseTime(modal.getAttribute(ATTR_PETAL_MEMORY_EXPIRES));
 
   return {

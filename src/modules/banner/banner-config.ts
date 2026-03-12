@@ -1,5 +1,5 @@
 import { ATTR_ALLOW_CLOSE, ATTR_PETAL_DEBUG, ATTR_PETAL_MEMORY, ATTR_PETAL_MEMORY_EXPIRES } from "../../lib/attributes";
-import { parseTime } from "../../lib/helpers";
+import { parseTime, parseBoolean } from "../../lib/helpers";
 
 export interface BannerConfig {
   allowClose: boolean;
@@ -11,10 +11,10 @@ export interface BannerConfig {
 }
 
 export function parseBannerConfig(banner: Element): BannerConfig {
-  const allowClose = banner.getAttribute(ATTR_ALLOW_CLOSE) !== "false";
-  const debug = banner.getAttribute(ATTR_PETAL_DEBUG) === "true";
+  const allowClose = parseBoolean(banner.getAttribute(ATTR_ALLOW_CLOSE)) ?? true;
+  const debug = parseBoolean(banner.getAttribute(ATTR_PETAL_DEBUG)) ?? false;
 
-  const memoryEnabled = banner.getAttribute(ATTR_PETAL_MEMORY) === "true";
+  const memoryEnabled = parseBoolean(banner.getAttribute(ATTR_PETAL_MEMORY)) ?? false;
   const memoryExpires = parseTime(banner.getAttribute(ATTR_PETAL_MEMORY_EXPIRES));
 
   return {
