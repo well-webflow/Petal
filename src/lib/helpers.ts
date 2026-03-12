@@ -112,11 +112,12 @@ export function parseNumber(raw: string | null): number | undefined {
 
 /**
  * Parses a boolean attribute value.
- * Returns undefined if the raw value is null, otherwise returns true for "true" (case-insensitive) and false otherwise.
+ * Returns undefined if the raw value is null, otherwise returns true for "true" or "on" (case-insensitive) and false otherwise.
  */
 export function parseBoolean(raw: string | null): boolean | undefined {
   if (raw === null) return undefined;
-  return raw.toLowerCase() === "true";
+  const lower = raw.toLowerCase();
+  return lower === "true" || lower === "on";
 }
 
 /**
