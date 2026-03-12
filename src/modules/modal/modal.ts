@@ -53,7 +53,7 @@ class ModalController {
    */
   open = (): void => {
     // Lock scroll if configured
-    if (this.config.lockScrollOnOpen) {
+    if (this.config.lockScroll) {
       lockScroll();
       if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Locked scroll`);
     }
@@ -67,7 +67,7 @@ class ModalController {
    */
   close = (): void => {
     // Unlock scroll if configured
-    if (this.config.lockScrollOnOpen) {
+    if (this.config.lockScroll) {
       unlockScroll();
       if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Unlocked scroll`);
     }
@@ -159,6 +159,18 @@ export function initializeAllModals(): void {
           }
         }
       });
+    }
+
+    // ===========================
+    // Auto Open
+    // ===========================
+    if (config.autoOpen) {
+      const delay = config.autoOpenDelay ? config.autoOpenDelay.getTime() - Date.now() : 0;
+      debug(config.debug, "MODAL", `Auto-opening "${name}" after ${delay}ms`);
+
+      setTimeout(() => {
+        controller.open();
+      }, delay);
     }
   });
 }

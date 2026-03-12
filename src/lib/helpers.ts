@@ -149,3 +149,49 @@ export function parseAsIs<T>(raw: T): T {
 export function isAllNullish(obj: any): boolean {
   return Object.keys(obj).every((key) => obj[key] == null);
 }
+
+/**
+ * Parses a time string and returns a Date representing that duration from now.
+ * Accepts formats like: 1000ms, 5s, 10m, 1h, 3d, 4y
+ * @param timeString The time string to parse (e.g., "5m", "1h", "30s")
+ * @returns A Date object representing the expiration time, or undefined if parsing fails
+ */
+export function parseTime(timeString: string | null): Date | undefined {
+  if (timeString === null) return undefined;
+
+  const match = timeString.match(/^(\d+(?:\.\d+)?)(ms|s|m|h|d|y)$/);
+  if (!match) return undefined;
+
+  const value = parseFloat(match[1]);
+  const unit = match[2];
+
+  if (isNaN(value)) return undefined;
+
+  const now = Date.now();
+  let milliseconds = 0;
+
+  switch (unit) {
+    case 'ms':
+      milliseconds = value;
+      break;
+    case 's':
+      milliseconds = value * 1000;
+      break;
+    case 'm':
+      milliseconds = value * 60 * 1000;
+      break;
+    case 'h':
+      milliseconds = value * 60 * 60 * 1000;
+      break;
+    case 'd':
+      milliseconds = value * 24 * 60 * 60 * 1000;
+      break;
+    case 'y':
+      milliseconds = value * 365.25 * 24 * 60 * 60 * 1000;
+      break;
+    default:
+      return undefined;
+  }
+
+  return new Date(now + milliseconds);
+}

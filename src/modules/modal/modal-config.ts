@@ -4,14 +4,17 @@
  * Handles parsing modal configuration from HTML attributes.
  */
 
-import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG, ATTR_PETAL_LOCK_SCROLL_ON_OPEN, ATTR_PETAL_ANIM_OPEN, ATTR_PETAL_ANIM_CLOSE } from "../../lib/attributes";
+import { parseTime } from "../../lib/helpers";
+import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG, ATTR_PETAL_LOCK_SCROLL_ON_OPEN, ATTR_PETAL_ANIM_OPEN, ATTR_PETAL_ANIM_CLOSE, ATTR_PETAL_AUTO_OPEN, ATTR_PETAL_AUTO_OPEN_DELAY } from "../../lib/attributes";
 
 export interface ModalConfig {
   name: string;
   debug: boolean;
-  lockScrollOnOpen: boolean;
+  lockScroll: boolean;
   animOpen?: string | null;
   animClose?: string | null;
+  autoOpen?: boolean;
+  autoOpenDelay?: Date | undefined;
 }
 
 /**
@@ -20,17 +23,23 @@ export interface ModalConfig {
 export function parseModalConfig(modal: Element): ModalConfig {
   const name = modal.getAttribute(ATTR_PETAL_NAME) || "unknown";
   const debug = modal.getAttribute(ATTR_PETAL_DEBUG) === "true";
-  const lockScrollOnOpen = modal.getAttribute(ATTR_PETAL_LOCK_SCROLL_ON_OPEN) !== "false"; // Default to true
+
+  const lockScroll = modal.getAttribute(ATTR_PETAL_LOCK_SCROLL_ON_OPEN) !== "false"; // Default to true
 
   const animOpen = modal.getAttribute(ATTR_PETAL_ANIM_OPEN);
   const animClose = modal.getAttribute(ATTR_PETAL_ANIM_CLOSE);
 
+  const autoOpen = modal.getAttribute(ATTR_PETAL_AUTO_OPEN) === "true";
+  const autoOpenDelay = parseTime(modal.getAttribute(ATTR_PETAL_AUTO_OPEN_DELAY));
+
   return {
     name,
     debug,
-    lockScrollOnOpen,
+    lockScroll,
     animOpen,
     animClose,
+    autoOpen,
+    autoOpenDelay,
   };
 }
 
