@@ -1,26 +1,35 @@
-import { ATTR_ALLOW_CLOSE, ATTR_PETAL_DEBUG, ATTR_PETAL_SESSION_TTL } from "../../lib/attributes";
+import { ATTR_ALLOW_CLOSE, ATTR_PETAL_DEBUG, ATTR_PETAL_MEMORY, ATTR_PETAL_MEMORY_EXPIRES } from "../../lib/attributes";
+import { parseTime } from "../../lib/helpers";
 
 export interface BannerConfig {
   allowClose: boolean;
   debug: boolean;
-  sessionTTLMinutes: number;
+  memory: {
+    enabled: boolean;
+    expires: Date | undefined;
+  };
 }
 
 export function parseBannerConfig(banner: Element): BannerConfig {
   const allowClose = banner.getAttribute(ATTR_ALLOW_CLOSE) !== "false";
   const debug = banner.getAttribute(ATTR_PETAL_DEBUG) === "true";
-  const sessionTTLMinutes = parseFloat(banner.getAttribute(ATTR_PETAL_SESSION_TTL) || "30");
+
+  const memoryEnabled = banner.getAttribute(ATTR_PETAL_MEMORY) === "true";
+  const memoryExpires = parseTime(banner.getAttribute(ATTR_PETAL_MEMORY_EXPIRES));
 
   return {
     allowClose,
     debug,
-    sessionTTLMinutes,
+    memory: {
+      enabled: memoryEnabled,
+      expires: memoryExpires,
+    },
   };
 }
 
 export function logConfig(config: BannerConfig) {
   console.log("Banner - Configuration:", {
     allowClose: config.allowClose,
-    sessionTTLMinutes: config.sessionTTLMinutes,
+    memory: config.memory,
   });
 }

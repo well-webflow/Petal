@@ -12,12 +12,6 @@ export const ATTR_PETAL_ELEMENT = "petal-el";
 export const ATTR_PETAL_GROUP = "petal-group"; // Group name for coordinated behavior across components
 export const ATTR_PETAL_STATE = "petal-state";
 export const ATTR_PETAL_DEBUG = "petal-debug"; // Enable debug console logging
-
-// BEHAVIOR
-export const ATTR_PETAL_SHOW_ONCE = "petal-show-once"; // Regardless of other settings, only show the modal once per user session
-export const ATTR_PETAL_SESSION_TTL = "petal-session-ttl"; // Time to keep user session (in hours)
-
-// VISIBILITY
 export const ATTR_PETAL_VISIBLE = "petal-visible";
 
 /**-------------------------*
@@ -29,7 +23,6 @@ export const ATTR_PETAL_ANIM_CLOSE = "petal-anim-close";
 /**-------------------------*
  * TRIGGERS
  *--------------------------*/
-
 export const ATTR_PETAL_TRIGGER = "petal-trigger";
 export const ATTR_PETAL_TRIGGER_OPEN = "petal-trigger-open";
 export const ATTR_PETAL_TRIGGER_CLOSE = "petal-trigger-close";
@@ -45,7 +38,6 @@ export const ATTR_PETAL_HIDE_MOBILE = "petal-hide-mobile";
 /**-------------------------*
  * OVERLAY
  *--------------------------*/
-
 export const ATTR_PETAL_OVERLAY = "overlay";
 export const ATTR_PETAL_OVERLAY_OPACITY = "petal-overlay-opacity";
 export const ATTR_PETAL_OVERLAY_CLOSE = "petal-overlay-close";
@@ -98,3 +90,10 @@ export const ATTR_PETAL_DROPDOWN_OPEN_ON_HOVER = "petal-dropdown-open-on-hover";
 
 // ARIA ATTRIBUTES
 export const ARIA_EXPANDED = "aria-expanded";
+
+/**-------------------------*
+ * MEMORY
+ *--------------------------*/
+
+export const ATTR_PETAL_MEMORY = "petal-memory"; // Enable memory for this element (i.e. don't show again if closed)
+export const ATTR_PETAL_MEMORY_EXPIRES = "petal-memory-expires"; // Time to keep user session (FORMAT: "4y", "2m" "1d", "2h", "30m", "15s", "200ms")

@@ -1,7 +1,7 @@
 import { debug, debugElements } from "../../lib/debug";
-import { ATTR_PETAL_BANNER, ATTR_PETAL_BANNER_CLOSE, ATTR_PETAL_NAME, ATTR_PETAL_ELEMENT, ATTR_PETAL_SESSION_TTL, ATTR_ALLOW_CLOSE } from "../../lib/attributes";
+import { ATTR_PETAL_BANNER, ATTR_PETAL_BANNER_CLOSE, ATTR_PETAL_NAME, ATTR_PETAL_ELEMENT } from "../../lib/attributes";
 import { getAllPetalElementsOfType } from "../../lib/helpers";
-import { storeClosedState, checkClosedState, clearClosedState } from "../../lib/memory";
+import { storeClosedState, checkClosedState, clearClosedState, storeMemoryWithExpiration, checkMemory, clearMemory } from "../../lib/memory";
 import { parseBannerConfig } from "./banner-config";
 
 export function initializeBanner() {
@@ -29,22 +29,47 @@ export function initializeBanner() {
         (closeButton as HTMLElement).style.display = "none";
       });
       clearClosedState("banner", name);
+      clearMemory("banner", name);
     }
 
     // If allowClose is true, check if banner was previously closed and set up event listeners on close buttons
     if (config.allowClose) {
-      // Check if banner was closed and session is still valid (only if allowClose is true)
-      if (checkClosedState("banner", name, config.sessionTTLMinutes)) {
-        // If closed and session valid, hide the banner
+      let shouldHide = false;
+
+      // Check memory first (localStorage with expiration)
+      if (config.memory.enabled) {
+        const isInMemory = checkMemory("banner", name);
+        if (isInMemory) {
+          shouldHide = true;
+          debug(config.debug, "BANNER", `Banner "${name}" is in memory - hiding`);
+        }
+      } else {
+        // Fall back to session storage check (default 30 minutes)
+        if (checkClosedState("banner", name, 30)) {
+          shouldHide = true;
+          debug(config.debug, "BANNER", `Banner "${name}" was closed in this session - hiding`);
+        }
+      }
+
+      if (shouldHide) {
         banner.classList.add("petal-hide-banner");
       }
+
       // Set up the close button
       closeButtons.forEach((closeButton) => {
         closeButton.addEventListener("click", () => {
           // Hide the banner
           banner.classList.add("petal-hide-banner");
-          // Store closed state in sessionStorage with timestamp
-          storeClosedState("banner", name);
+
+          // Store in memory if enabled
+          if (config.memory.enabled && config.memory.expires) {
+            storeMemoryWithExpiration("banner", name, config.memory.expires);
+            debug(config.debug, "BANNER", `Banner "${name}" stored in memory until ${config.memory.expires.toISOString()}`);
+          } else {
+            // Fall back to session storage
+            storeClosedState("banner", name);
+            debug(config.debug, "BANNER", `Banner "${name}" stored in session`);
+          }
         });
       });
     }

@@ -5,7 +5,17 @@
  */
 
 import { parseTime } from "../../lib/helpers";
-import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG, ATTR_PETAL_LOCK_SCROLL_ON_OPEN, ATTR_PETAL_ANIM_OPEN, ATTR_PETAL_ANIM_CLOSE, ATTR_PETAL_AUTO_OPEN, ATTR_PETAL_AUTO_OPEN_DELAY } from "../../lib/attributes";
+import {
+  ATTR_PETAL_NAME,
+  ATTR_PETAL_DEBUG,
+  ATTR_PETAL_LOCK_SCROLL_ON_OPEN,
+  ATTR_PETAL_ANIM_OPEN,
+  ATTR_PETAL_ANIM_CLOSE,
+  ATTR_PETAL_AUTO_OPEN,
+  ATTR_PETAL_AUTO_OPEN_DELAY,
+  ATTR_PETAL_MEMORY,
+  ATTR_PETAL_MEMORY_EXPIRES,
+} from "../../lib/attributes";
 
 export interface ModalConfig {
   name: string;
@@ -15,6 +25,10 @@ export interface ModalConfig {
   animClose?: string | null;
   autoOpen?: boolean;
   autoOpenDelay?: Date | undefined;
+  memory: {
+    enabled: boolean;
+    expires: Date | undefined;
+  };
 }
 
 /**
@@ -32,6 +46,9 @@ export function parseModalConfig(modal: Element): ModalConfig {
   const autoOpen = modal.getAttribute(ATTR_PETAL_AUTO_OPEN) === "true";
   const autoOpenDelay = parseTime(modal.getAttribute(ATTR_PETAL_AUTO_OPEN_DELAY));
 
+  const memoryEnabled = modal.getAttribute(ATTR_PETAL_MEMORY) === "true";
+  const memoryExpires = parseTime(modal.getAttribute(ATTR_PETAL_MEMORY_EXPIRES));
+
   return {
     name,
     debug,
@@ -40,6 +57,10 @@ export function parseModalConfig(modal: Element): ModalConfig {
     animClose,
     autoOpen,
     autoOpenDelay,
+    memory: {
+      enabled: memoryEnabled,
+      expires: memoryExpires,
+    },
   };
 }
 

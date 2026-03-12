@@ -50,6 +50,53 @@ export function clearClosedState(type: MemoryItem, name: string) {
   sessionStorage.removeItem(getMemoryKey(type, name));
 }
 
+/**
+ * Store Closed State in Local Storage with expiration Date
+ * @param type The type of element (modal or banner)
+ * @param name The name of the Petal Element to store
+ * @param expiresAt The Date when this memory expires
+ */
+export function storeMemoryWithExpiration(type: MemoryItem, name: string, expiresAt: Date) {
+  localStorage.setItem(getMemoryKey(type, name), expiresAt.getTime().toString());
+}
+
+/**
+ * Check if element is in memory (was closed and not yet expired)
+ * @param type The type of element (modal or banner)
+ * @param name The name of the Petal Element to check
+ * @returns True if the element is in memory and not expired, false if expired or not found
+ */
+export function checkMemory(type: MemoryItem, name: string): boolean {
+  const expiresAtStr = localStorage.getItem(getMemoryKey(type, name));
+  if (!expiresAtStr) return false;
+
+  const expiresAt = parseInt(expiresAtStr, 10);
+  if (isNaN(expiresAt)) {
+    localStorage.removeItem(getMemoryKey(type, name));
+    return false;
+  }
+
+  const now = Date.now();
+
+  if (now >= expiresAt) {
+    // Memory expired, clear it
+    localStorage.removeItem(getMemoryKey(type, name));
+    return false;
+  }
+
+  // Still in memory (not expired)
+  return true;
+}
+
+/**
+ * Clear Memory from Local Storage
+ * @param type The type of element (modal or banner)
+ * @param name The name of the Petal Element to clear
+ */
+export function clearMemory(type: MemoryItem, name: string) {
+  localStorage.removeItem(getMemoryKey(type, name));
+}
+
 function getMemoryKey(key: MemoryItem, name: string) {
   return `petal_memory_${key}_${name}`;
 }

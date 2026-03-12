@@ -27,7 +27,7 @@ import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_DIALOG, ATTR_PETAL_TRIGGE
 import { findPetalElementByNameOrInParent, getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent } from "../../lib/helpers";
 import { parseModalConfig, logConfig, ModalConfig } from "./modal-config";
 import { debug, debugElements } from "../../lib/debug";
-import { storeClosedState } from "../../lib/memory";
+import { storeClosedState, storeMemoryWithExpiration, checkMemory } from "../../lib/memory";
 import { pauseVideo } from "../../video";
 import { lockScroll, unlockScroll } from "../../lib/scroll-lock";
 
@@ -75,8 +75,16 @@ class ModalController {
     // Pause any videos inside the modal
     pauseVideo(this.elements.modal);
 
-    // Store modal closed state
+    // Store modal closed state (session storage)
     storeClosedState("modal", this.config.name);
+
+    // Store memory with expiration if memory is enabled
+    if (this.config.memory.enabled && this.config.memory.expires) {
+      storeMemoryWithExpiration("modal", this.config.name, this.config.memory.expires);
+      if (this.config.debug) {
+        console.log(`[DEBUG] Modal "${this.config.name}" - Stored in memory until ${this.config.memory.expires.toISOString()}`);
+      }
+    }
 
     // Trigger the GSAP animation in Webflow
     const wfIx = Webflow.require("ix3");
@@ -165,12 +173,19 @@ export function initializeAllModals(): void {
     // Auto Open
     // ===========================
     if (config.autoOpen) {
-      const delay = config.autoOpenDelay ? config.autoOpenDelay.getTime() - Date.now() : 0;
-      debug(config.debug, "MODAL", `Auto-opening "${name}" after ${delay}ms`);
+      // Check if modal is in memory (user has closed it and it hasn't expired yet)
+      const isInMemory = config.memory.enabled && checkMemory("modal", config.name);
 
-      setTimeout(() => {
-        controller.open();
-      }, delay);
+      if (isInMemory) {
+        debug(config.debug, "MODAL", `Skipping auto-open for "${name}" - still in memory`);
+      } else {
+        const delay = config.autoOpenDelay ? config.autoOpenDelay.getTime() - Date.now() : 0;
+        debug(config.debug, "MODAL", `Auto-opening "${name}" after ${delay}ms`);
+
+        setTimeout(() => {
+          controller.open();
+        }, delay);
+      }
     }
   });
 }
