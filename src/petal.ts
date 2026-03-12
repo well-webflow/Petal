@@ -10,4 +10,4 @@ console.log(`🌸 Hello from Wellflow Petal v${APP_VERSION}`);
 initializeAllModals();
 initializeBanner();
 // initializeDropdowns();
-initializeOverlays();
+//initializeOverlays();
