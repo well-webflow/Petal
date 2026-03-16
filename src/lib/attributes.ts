@@ -49,7 +49,6 @@ export const ATTR_PETAL_OVERLAY_CLOSE = "petal-overlay-close";
 // ELEMENTS
 export const ATTR_PETAL_MODAL = "modal";
 export const ATTR_PETAL_DIALOG = "dialog";
-export const ATTR_PETAL_MODAL_TYPE = "petal-modal-type";
 
 // AUTO OPEN
 export const ATTR_PETAL_AUTO_OPEN = "petal-auto-open";

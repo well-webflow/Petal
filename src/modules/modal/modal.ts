@@ -9,16 +9,17 @@
  * - Open/close triggers
  * - Overlay click-to-close
  *
- * HTML Attributes (defined in attributes.ts):
+ * HTML Elements (defined in attributes.ts):
  * - petal-el="modal" - Container element (required)
  * - petal-el="dialog" - Dialog content (required)
  * - petal-el="overlay" - Background overlay (optional)
- * - petal="name" - Modal identifier (optional)
  * - petal-trigger="open" - Open trigger (requires petal="name" on trigger if outside modal)
  * - petal-trigger="close" - Close trigger (auto-detects parent modal if no name)
+ *
+ * HTML Attributes (defined in attributes.ts):
  * - petal-overlay-close="true" - Enable overlay click-to-close (default: true)
- * - petal-overlay-opacity="0.15" - Overlay opacity (default: 0.15)
- * - petal-modal-type="center|left|right|top|bottom" - Modal position type (default: center)
+ * - petal-auto-open="true" - Enable auto-open on page load (default: false)
+ * - petal-auto-open-delay="5000" - Delay in milliseconds before auto-opening (default: 0)
  * - petal-debug="true" - Enable debug logging
  */
 declare const Webflow: any;

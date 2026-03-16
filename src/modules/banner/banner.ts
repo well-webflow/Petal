@@ -1,4 +1,4 @@
-import { debug, debugElements } from "../../lib/debug";
+import { debug } from "../../lib/debug";
 import { ATTR_PETAL_BANNER, ATTR_PETAL_BANNER_CLOSE, ATTR_PETAL_NAME, ATTR_PETAL_ELEMENT } from "../../lib/attributes";
 import { getAllPetalElementsOfType } from "../../lib/helpers";
 import { clearClosedState, storeMemoryWithExpiration, checkMemory, clearMemory } from "../../lib/memory";
@@ -21,7 +21,6 @@ export function initializeBanner() {
 
     // ELEMENTS
     const closeButtons = banner.querySelectorAll(`[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_BANNER_CLOSE}"]`);
-    debugElements(config.debug, "BANNER", "close button", closeButtons);
 
     // If banner doesn't allow close, hide close buttons and clear any stored memory
     if (!config.allowClose) {
