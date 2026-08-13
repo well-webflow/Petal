@@ -23,10 +23,11 @@ export const ATTR_PETAL_ANIM_CLOSE = "petal-anim-close";
 /**-------------------------*
  * TRIGGERS
  *--------------------------*/
-// Elements
-export const ATTR_PETAL_TRIGGER = "trigger-toggle";
-export const ATTR_PETAL_TRIGGER_OPEN = "trigger-open";
-export const ATTR_PETAL_TRIGGER_CLOSE = "trigger-close";
+export const ATTR_PETAL_TRIGGER = "petal-trigger"; // Attribute to identify trigger elements
+// Type
+export const ATTR_PETAL_TRIGGER_TOGGLE = "toggle";
+export const ATTR_PETAL_TRIGGER_OPEN = "open";
+export const ATTR_PETAL_TRIGGER_CLOSE = "close";
 
 /**-------------------------*
  * BREAKPOINTS

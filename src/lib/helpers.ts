@@ -1,4 +1,4 @@
-import { ATTR_PETAL_ELEMENT, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER } from "./attributes";
+import { ATTR_PETAL_ELEMENT, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER, ATTR_PETAL_TRIGGER_TOGGLE } from "./attributes";
 
 export function getAllPetalElementsOfType(el: string): NodeListOf<HTMLElement> {
   return document.querySelectorAll(`[${ATTR_PETAL_ELEMENT}='${el}']`);
@@ -78,9 +78,9 @@ export function findClosestPetalParent(element: HTMLElement, petalElType: string
  */
 export function findTriggersByType(triggerType: string, name?: string | null): NodeListOf<HTMLElement> {
   if (name) {
-    return document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="${triggerType}"][${ATTR_PETAL_NAME}="${name}"]`);
+    return document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER_TOGGLE}="${triggerType}"][${ATTR_PETAL_NAME}="${name}"]`);
   }
-  return document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="${triggerType}"]`);
+  return document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER_TOGGLE}="${triggerType}"]`);
 }
 
 /**

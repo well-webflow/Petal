@@ -12,7 +12,7 @@
 declare const Webflow: any;
 declare const Vimeo: any;
 
-import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_DIALOG, ATTR_PETAL_TRIGGER, ATTR_PETAL_STATE } from "../../lib/attributes";
+import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_DIALOG, ATTR_PETAL_TRIGGER_TOGGLE, ATTR_PETAL_STATE } from "../../lib/attributes";
 import { findPetalElementByNameOrInParent, getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent, pauseVideo } from "../../lib/helpers";
 import { parseModalConfig, logConfig, ModalConfig } from "./modal-config";
 import { debug, debugElements } from "../../lib/debug";
@@ -253,7 +253,7 @@ export function initializeAllModals(): void {
 
     // Find and attach close triggers without names (that are children of this modal)
     if (!name) {
-      const allCloseTriggers = [...Array.from(document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="close"]`))];
+      const allCloseTriggers = [...Array.from(document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER_TOGGLE}="close"]`))];
       allCloseTriggers.forEach((trigger) => {
         // Check if this close trigger doesn't have a name and is a child of this modal
         const triggerName = trigger.getAttribute(ATTR_PETAL_NAME);
