@@ -15,12 +15,18 @@ import {
   ATTR_PETAL_AUTO_OPEN_DELAY,
   ATTR_PETAL_MEMORY,
   ATTR_PETAL_MEMORY_EXPIRES,
+  ATTR_PETAL_CLOSE_ON_RESIZE,
+  ATTR_PETAL_VIDEO_AUTOPLAY,
+  ATTR_PETAL_VIDEO_AUTOPAUSE,
 } from "../../lib/attributes";
 
 export interface ModalConfig {
   name: string;
   debug: boolean;
   lockScroll: boolean;
+  closeOnResize: boolean;
+  videoAutoplay: boolean;
+  videoAutopause: boolean;
   animOpen?: string | null;
   animClose?: string | null;
   autoOpen?: boolean;
@@ -39,6 +45,10 @@ export function parseModalConfig(modal: Element): ModalConfig {
   const debug = parseBoolean(modal.getAttribute(ATTR_PETAL_DEBUG)) ?? false;
 
   const lockScroll = parseBoolean(modal.getAttribute(ATTR_PETAL_LOCK_SCROLL_ON_OPEN)) ?? true; // Default to true
+  const closeOnResize = parseBoolean(modal.getAttribute(ATTR_PETAL_CLOSE_ON_RESIZE)) ?? false;
+
+  const videoAutoplay = parseBoolean(modal.getAttribute(ATTR_PETAL_VIDEO_AUTOPLAY)) ?? false;
+  const videoAutopause = parseBoolean(modal.getAttribute(ATTR_PETAL_VIDEO_AUTOPAUSE)) ?? true; // Default to true
 
   const animOpen = modal.getAttribute(ATTR_PETAL_ANIM_OPEN);
   const animClose = modal.getAttribute(ATTR_PETAL_ANIM_CLOSE);
@@ -53,6 +63,9 @@ export function parseModalConfig(modal: Element): ModalConfig {
     name,
     debug,
     lockScroll,
+    closeOnResize,
+    videoAutoplay,
+    videoAutopause,
     animOpen,
     animClose,
     autoOpen,

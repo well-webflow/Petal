@@ -36,6 +36,12 @@ export const ATTR_PETAL_HIDE_MOBILE_LANDSCAPE = "petal-hide-mobile-landscape";
 export const ATTR_PETAL_HIDE_MOBILE = "petal-hide-mobile";
 
 /**-------------------------*
+ * OBSERVER
+ *--------------------------*/
+export const ATTR_PETAL_CLOSE_ON_RESIZE = "petal-close-on-resize";
+export const ATTR_PETAL_CLOSE_ON_BREAKPOINT = "petal-close-on-breakpoint";
+
+/**-------------------------*
  * OVERLAY
  *--------------------------*/
 export const ATTR_PETAL_OVERLAY = "overlay";
@@ -53,6 +59,13 @@ export const ATTR_PETAL_DIALOG = "dialog";
 // AUTO OPEN
 export const ATTR_PETAL_AUTO_OPEN = "petal-auto-open";
 export const ATTR_PETAL_AUTO_OPEN_DELAY = "petal-auto-open-delay";
+
+/**-------------------------*
+ * VIDEO
+ *--------------------------*/
+
+export const ATTR_PETAL_VIDEO_AUTOPLAY = "petal-video-autoplay"; // Enable autoplay for video elements within the modal
+export const ATTR_PETAL_VIDEO_AUTOPAUSE = "petal-video-autopause"; // Enable auto-pause for video elements when modal is closed
 
 /**-------------------------*
  * NAV

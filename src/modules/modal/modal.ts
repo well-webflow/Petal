@@ -1,5 +1,5 @@
 /**
- * Modal Component
+ * -+-+-+ Modal -+-+-+
  *
  * Handles interactive modal dialogs with support for:
  * - GSAP animations
@@ -8,28 +8,15 @@
  * - Session state storage
  * - Open/close triggers
  * - Overlay click-to-close
- *
- * HTML Elements (defined in attributes.ts):
- * - petal-el="modal" - Container element (required)
- * - petal-el="dialog" - Dialog content (required)
- * - petal-el="overlay" - Background overlay (optional)
- * - petal-trigger="open" - Open trigger (requires petal="name" on trigger if outside modal)
- * - petal-trigger="close" - Close trigger (auto-detects parent modal if no name)
- *
- * HTML Attributes (defined in attributes.ts):
- * - petal-overlay-close="true" - Enable overlay click-to-close (default: true)
- * - petal-auto-open="true" - Enable auto-open on page load (default: false)
- * - petal-auto-open-delay="5000" - Delay in milliseconds before auto-opening (default: 0)
- * - petal-debug="true" - Enable debug logging
  */
 declare const Webflow: any;
+declare const Vimeo: any;
 
-import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_DIALOG, ATTR_PETAL_TRIGGER } from "../../lib/attributes";
-import { findPetalElementByNameOrInParent, getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent } from "../../lib/helpers";
+import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_DIALOG, ATTR_PETAL_TRIGGER, ATTR_PETAL_STATE } from "../../lib/attributes";
+import { findPetalElementByNameOrInParent, getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent, pauseVideo } from "../../lib/helpers";
 import { parseModalConfig, logConfig, ModalConfig } from "./modal-config";
 import { debug, debugElements } from "../../lib/debug";
 import { storeClosedState, storeMemoryWithExpiration, checkMemory } from "../../lib/memory";
-import { pauseVideo } from "../../video";
 import { lockScroll, unlockScroll } from "../../lib/scroll-lock";
 
 export interface ModalElements {
@@ -37,6 +24,7 @@ export interface ModalElements {
   dialog: HTMLElement;
   openTriggers: NodeListOf<HTMLElement>;
   closeTriggers: NodeListOf<HTMLElement>;
+  toggleTriggers: NodeListOf<HTMLElement>;
 }
 
 /**
@@ -44,53 +32,161 @@ export interface ModalElements {
  * Manages modal state and orchestrates opening/closing logic with animations.
  */
 class ModalController {
+  private lastWidth: number = window.innerWidth;
+  private lastHeight: number = window.innerHeight;
+  private resizeHandler: (() => void) | null = null;
+  private vimeoPlayer: any = null;
+
   constructor(
     private elements: ModalElements,
     private config: ModalConfig,
-  ) {}
+  ) {
+    this.initializeVimeoPlayer();
+  }
 
   /**
    * Opens the modal using GSAP
    */
   open = (): void => {
-    // Lock scroll if configured
-    if (this.config.lockScroll) {
-      lockScroll();
-      if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Locked scroll`);
+    try {
+      // Set state to open
+      this.elements.modal.setAttribute(ATTR_PETAL_STATE, "open");
+
+      // Lock scroll if configured
+      if (this.config.lockScroll) {
+        lockScroll();
+        if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Locked scroll`);
+      }
+
+      // Setup resize handler if close-on-resize is enabled
+      if (this.config.closeOnResize) {
+        this.setupResizeHandler();
+      }
+
+      // Play Vimeo video if autoplay is enabled
+      if (this.config.videoAutoplay && this.vimeoPlayer) {
+        this.vimeoPlayer.play().catch((error: any) => {
+          if (this.config.debug) {
+            console.log(`[DEBUG] Modal "${this.config.name}" - Could not autoplay Vimeo video:`, error);
+          }
+        });
+      }
+
+      // Trigger the GSAP animation in Webflow
+      const wfIx = Webflow.require("ix3");
+      wfIx.emit(this.config.animOpen);
+    } catch (error) {
+      // If animation fails, unlock scroll to prevent permanent lock
+      if (this.config.lockScroll) {
+        unlockScroll();
+        if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Unlocked scroll due to error`);
+      }
+      console.error(`[ERROR] Modal "${this.config.name}" - Failed to open:`, error);
     }
-    // Trigger the GSAP animation in Webflow
-    const wfIx = Webflow.require("ix3");
-    wfIx.emit(this.config.animOpen);
   };
 
   /**
    * Closes the modal using GSAP
    */
   close = (): void => {
-    // Unlock scroll if configured
-    if (this.config.lockScroll) {
-      unlockScroll();
-      if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Unlocked scroll`);
+    try {
+      // Set state to closed
+      this.elements.modal.setAttribute(ATTR_PETAL_STATE, "closed");
+
+      // Unlock scroll if configured
+      if (this.config.lockScroll) {
+        unlockScroll();
+        if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Unlocked scroll`);
+      }
+
+      // Remove resize handler if it exists
+      if (this.resizeHandler) {
+        window.removeEventListener("resize", this.resizeHandler);
+        this.resizeHandler = null;
+      }
+
+      // Pause Vimeo video if autopause is enabled
+      if (this.config.videoAutopause && this.vimeoPlayer) {
+        this.vimeoPlayer.pause().catch((error: any) => {
+          if (this.config.debug) {
+            console.log(`[DEBUG] Modal "${this.config.name}" - Could not pause Vimeo video:`, error);
+          }
+        });
+      }
+
+      // Pause any videos inside the modal
+      pauseVideo(this.elements.modal);
+
+      // Store modal closed state (session storage)
+      storeClosedState("modal", this.config.name);
+
+      // Store memory with expiration if memory is enabled
+      if (this.config.memory.enabled && this.config.memory.expires) {
+        storeMemoryWithExpiration("modal", this.config.name, this.config.memory.expires);
+        if (this.config.debug) {
+          console.log(`[DEBUG] Modal "${this.config.name}" - Stored in memory until ${this.config.memory.expires.toISOString()}`);
+        }
+      }
+
+      // Trigger the GSAP animation in Webflow
+      const wfIx = Webflow.require("ix3");
+      wfIx.emit(this.config.animClose);
+    } catch (error) {
+      console.error(`[ERROR] Modal "${this.config.name}" - Failed to close:`, error);
+    }
+  };
+
+  /**
+   * Setup resize handler to close modal on window dimension changes
+   */
+  private setupResizeHandler = (): void => {
+    // Reset tracked dimensions when setting up
+    this.lastWidth = window.innerWidth;
+    this.lastHeight = window.innerHeight;
+
+    // Create and store the handler
+    this.resizeHandler = () => {
+      const currentWidth = window.innerWidth;
+      const currentHeight = window.innerHeight;
+
+      // Only close if actual dimensions changed
+      if (currentWidth !== this.lastWidth || currentHeight !== this.lastHeight) {
+        if (this.config.debug) {
+          console.log(`[DEBUG] Modal "${this.config.name}" - Window resized from ${this.lastWidth}x${this.lastHeight} to ${currentWidth}x${currentHeight}`);
+        }
+        this.close();
+      }
+    };
+
+    // Add the event listener
+    window.addEventListener("resize", this.resizeHandler);
+  };
+
+  /**
+   * Initialize Vimeo player if present in modal
+   */
+  private initializeVimeoPlayer = (): void => {
+    // Check if Vimeo is available and video autoplay/autopause is enabled
+    if (typeof Vimeo === "undefined") {
+      return;
     }
 
-    // Pause any videos inside the modal
-    pauseVideo(this.elements.modal);
+    if (!this.config.videoAutoplay && !this.config.videoAutopause) {
+      return;
+    }
 
-    // Store modal closed state (session storage)
-    storeClosedState("modal", this.config.name);
-
-    // Store memory with expiration if memory is enabled
-    if (this.config.memory.enabled && this.config.memory.expires) {
-      storeMemoryWithExpiration("modal", this.config.name, this.config.memory.expires);
-      if (this.config.debug) {
-        console.log(`[DEBUG] Modal "${this.config.name}" - Stored in memory until ${this.config.memory.expires.toISOString()}`);
+    // Look for Vimeo iframe in modal
+    const vimeoIframe = this.elements.modal.querySelector("iframe[src*='vimeo.com']");
+    if (vimeoIframe) {
+      try {
+        this.vimeoPlayer = new Vimeo.Player(vimeoIframe);
+        if (this.config.debug) {
+          console.log(`[DEBUG] Modal "${this.config.name}" - Initialized Vimeo player`);
+        }
+      } catch (error) {
+        console.error(`[ERROR] Modal "${this.config.name}" - Failed to initialize Vimeo player:`, error);
       }
     }
-
-    // Trigger the GSAP animation in Webflow
-    const wfIx = Webflow.require("ix3");
-    console.log(`[DEBUG] Modal "${this.config.name}" - Closing with animation "${this.config.animClose}"`);
-    wfIx.emit(this.config.animClose);
   };
 }
 
@@ -110,15 +206,20 @@ export function initializeAllModals(): void {
     debug(config.debug, "MODAL", `Processing ${name} (${index + 1}/${modals.length})`);
     logConfig(config);
 
+    // Initialize state attribute
+    modal.setAttribute(ATTR_PETAL_STATE, "closed");
+
     // ===========================
     // Element References
     // ===========================
     const dialog = findPetalElementByNameOrInParent(modal, name, ATTR_PETAL_DIALOG);
     const openTriggers = findTriggersByNameOrInParent(modal, name, "open");
     const closeTriggers = findTriggersByNameOrInParent(modal, name, "close");
+    const toggleTriggers = findTriggersByNameOrInParent(modal, name, "toggle");
 
     debugElements(config.debug, "MODAL", "open trigger", openTriggers);
     debugElements(config.debug, "MODAL", "close trigger", closeTriggers);
+    debugElements(config.debug, "MODAL", "toggle trigger", toggleTriggers);
 
     if (!dialog || !openTriggers || !closeTriggers) {
       console.error(`[ERROR] Modal "${name}" is missing required elements. Ensure dialog, open triggers, and close triggers are present.`);
@@ -130,6 +231,7 @@ export function initializeAllModals(): void {
       dialog,
       openTriggers,
       closeTriggers,
+      toggleTriggers,
     };
 
     // ===========================
@@ -150,6 +252,18 @@ export function initializeAllModals(): void {
     closeTriggers?.forEach((trigger, triggerIndex) => {
       trigger.addEventListener("click", () => {
         controller.close();
+      });
+    });
+
+    // Initialize Toggle Triggers
+    toggleTriggers?.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        const currentState = modal.getAttribute(ATTR_PETAL_STATE);
+        if (currentState === "open") {
+          controller.close();
+        } else {
+          controller.open();
+        }
       });
     });
 

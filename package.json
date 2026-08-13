@@ -1,6 +1,6 @@
 {
   "name": "well-petal",
-  "version": "0.0.88",
+  "version": "0.1.4",
   "description": "Webflow Popups powered by Attributes",
   "main": "dist/petal.js",
   "files": [

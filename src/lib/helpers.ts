@@ -172,22 +172,22 @@ export function parseTime(timeString: string | null): Date | undefined {
   let milliseconds = 0;
 
   switch (unit) {
-    case 'ms':
+    case "ms":
       milliseconds = value;
       break;
-    case 's':
+    case "s":
       milliseconds = value * 1000;
       break;
-    case 'm':
+    case "m":
       milliseconds = value * 60 * 1000;
       break;
-    case 'h':
+    case "h":
       milliseconds = value * 60 * 60 * 1000;
       break;
-    case 'd':
+    case "d":
       milliseconds = value * 24 * 60 * 60 * 1000;
       break;
-    case 'y':
+    case "y":
       milliseconds = value * 365.25 * 24 * 60 * 60 * 1000;
       break;
     default:
@@ -195,4 +195,11 @@ export function parseTime(timeString: string | null): Date | undefined {
   }
 
   return new Date(now + milliseconds);
+}
+
+export function pauseVideo(modal: HTMLElement): void {
+  // Pause all <video> elements inside the modal before hiding it
+  modal.querySelectorAll("video").forEach((video) => {
+    if (!video.paused) video.pause();
+  });
 }
