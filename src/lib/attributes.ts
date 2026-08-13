@@ -24,6 +24,8 @@ export const ATTR_PETAL_ANIM_CLOSE = "petal-anim-close";
  * TRIGGERS
  *--------------------------*/
 export const ATTR_PETAL_TRIGGER = "petal-trigger"; // Attribute to identify trigger elements
+export const ATTR_PETAL_TRIGGER_ANIM_OPEN = "petal-trigger-anim-open"; // Attribute to specify the animation to play when opening
+export const ATTR_PETAL_TRIGGER_ANIM_CLOSE = "petal-trigger-anim-close"; // Attribute to specify the animation to play when closing
 // Type
 export const ATTR_PETAL_TRIGGER_TOGGLE = "toggle";
 export const ATTR_PETAL_TRIGGER_OPEN = "open";

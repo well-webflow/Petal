@@ -12,7 +12,7 @@
 declare const Webflow: any;
 declare const Vimeo: any;
 
-import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER, ATTR_PETAL_STATE } from "../../lib/attributes";
+import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER, ATTR_PETAL_STATE, ATTR_PETAL_TRIGGER_ANIM_OPEN, ATTR_PETAL_TRIGGER_ANIM_CLOSE } from "../../lib/attributes";
 import { getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent, pauseVideo } from "../../lib/helpers";
 import { parseModalConfig, logConfig, ModalConfig } from "./modal-config";
 import { debug, debugElements } from "../../lib/debug";
@@ -68,6 +68,9 @@ class ModalController {
         });
       }
 
+      // Play trigger animations
+      this.playTriggerAnimations("open");
+
       // Trigger the GSAP animation in Webflow
       const wfIx = Webflow.require("ix3");
       wfIx.emit(this.config.animation.open);
@@ -116,6 +119,9 @@ class ModalController {
       if (this.config.memory.enabled && this.config.memory.expires) {
         storeMemoryWithExpiration("modal", this.config.name, this.config.memory.expires);
       }
+
+      // Play trigger animations
+      this.playTriggerAnimations("close");
 
       // Trigger the GSAP animation in Webflow
       const wfIx = Webflow.require("ix3");
@@ -170,6 +176,28 @@ class ModalController {
         console.error(`[ERROR] Modal "${this.config.name}" - Failed to initialize Vimeo player:`, error);
       }
     }
+  };
+
+  /**
+   * Play trigger animations based on state
+   */
+  private playTriggerAnimations = (state: "open" | "close"): void => {
+    const wfIx = Webflow.require("ix3");
+    const animAttr = state === "open" ? ATTR_PETAL_TRIGGER_ANIM_OPEN : ATTR_PETAL_TRIGGER_ANIM_CLOSE;
+
+    // Play animations on all trigger types
+    const allTriggers = [
+      ...Array.from(this.elements.openTriggers),
+      ...Array.from(this.elements.closeTriggers),
+      ...Array.from(this.elements.toggleTriggers),
+    ];
+
+    allTriggers.forEach((trigger) => {
+      const animName = trigger.getAttribute(animAttr);
+      if (animName) {
+        wfIx.emit(animName);
+      }
+    });
   };
 }
 
