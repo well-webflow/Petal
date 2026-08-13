@@ -182,6 +182,10 @@ class ModalController {
    * Play trigger animations based on state
    */
   private playTriggerAnimations = (state: "open" | "close"): void => {
+    if (this.config.debug) {
+      console.log(`[DEBUG] Modal "${this.config.name}" - Playing ${state} animations on triggers`);
+    }
+
     const wfIx = Webflow.require("ix3");
     const animAttr = state === "open" ? ATTR_PETAL_TRIGGER_ANIM_OPEN : ATTR_PETAL_TRIGGER_ANIM_CLOSE;
 
@@ -192,9 +196,19 @@ class ModalController {
       ...Array.from(this.elements.toggleTriggers),
     ];
 
+    if (this.config.debug) {
+      console.log(`[DEBUG] Modal "${this.config.name}" - Found ${allTriggers.length} triggers total`);
+    }
+
     allTriggers.forEach((trigger) => {
       const animName = trigger.getAttribute(animAttr);
+      if (this.config.debug) {
+        console.log(`[DEBUG] Modal "${this.config.name}" - Trigger animation attribute (${animAttr}):`, animName);
+      }
       if (animName) {
+        if (this.config.debug) {
+          console.log(`[DEBUG] Modal "${this.config.name}" - Emitting trigger animation:`, animName);
+        }
         wfIx.emit(animName);
       }
     });
