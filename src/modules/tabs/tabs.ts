@@ -7,100 +7,16 @@
  * - Active state management
  * - Click-to-switch tab panes
  */
-declare const gsap: any;
 
-import { ATTR_PETAL_NAME, ATTR_PETAL_STATE, ATTR_PETAL_ELEMENT } from "../../lib/attributes";
-import {
-  parseTabsConfig,
-  logConfig,
-  TabsConfig,
-  AnimationType,
-  ATTR_PETAL_TABS,
-  ATTR_PETAL_TAB_LINK,
-  ATTR_PETAL_TAB_PANE,
-} from "./tabs-config";
+import { ATTR_PETAL_STATE, ATTR_PETAL_ELEMENT } from "../../lib/attributes";
+import { parseTabsConfig, logConfig, TabsConfig, ATTR_PETAL_TABS, ATTR_PETAL_TAB_LINK, ATTR_PETAL_TAB_PANE } from "./tabs-config";
 import { debug } from "../../lib/debug";
+import { animateIn, animateOut, setActive } from "../../lib/animations";
 
 export interface TabsElements {
   wrapper: HTMLElement;
   links: NodeListOf<HTMLElement>;
   panes: NodeListOf<HTMLElement>;
-}
-
-// Direction multipliers for each animation type
-const ANIM_DIRECTIONS: Record<AnimationType, { x: number; y: number }> = {
-  fade: { x: 0, y: 0 },
-  "slide-left": { x: 1, y: 0 },
-  "slide-right": { x: -1, y: 0 },
-  "slide-up": { x: 0, y: 1 },
-  "slide-down": { x: 0, y: -1 },
-  none: { x: 0, y: 0 },
-};
-
-/**
- * Calculate offset based on animation type and offset value
- */
-function getOffset(type: AnimationType, offset: number): { x: number; y: number } {
-  const dir = ANIM_DIRECTIONS[type] || ANIM_DIRECTIONS.fade;
-  return { x: dir.x * offset, y: dir.y * offset };
-}
-
-/**
- * Set active state on an element
- */
-function setActive(el: HTMLElement, active: boolean): void {
-  if (active) {
-    el.setAttribute(ATTR_PETAL_STATE, "active");
-    el.classList.add("is-active");
-  } else {
-    el.setAttribute(ATTR_PETAL_STATE, "inactive");
-    el.classList.remove("is-active");
-  }
-}
-
-/**
- * Animate pane out
- */
-function animateOut(
-  pane: HTMLElement,
-  type: AnimationType,
-  duration: number,
-  offset: number,
-  onComplete: () => void
-): void {
-  if (type === "none") {
-    pane.style.display = "none";
-    onComplete();
-    return;
-  }
-
-  const { x, y } = getOffset(type, offset);
-  gsap.to(pane, {
-    opacity: 0,
-    x,
-    y,
-    duration,
-    ease: "power1.out",
-    onComplete: () => {
-      pane.style.display = "none";
-      onComplete();
-    },
-  });
-}
-
-/**
- * Animate pane in
- */
-function animateIn(pane: HTMLElement, type: AnimationType, duration: number, offset: number): void {
-  pane.style.display = "flex";
-
-  if (type === "none") {
-    gsap.set(pane, { clearProps: "opacity,x,y" });
-    return;
-  }
-
-  const { x, y } = getOffset(type, offset);
-  gsap.fromTo(pane, { opacity: 0, x, y }, { opacity: 1, x: 0, y: 0, duration, ease: "power1.out" });
 }
 
 /**
@@ -134,7 +50,7 @@ class TabsController {
 
       // Update pane
       setActive(pane, true);
-      animateIn(pane, this.config.animation.type, this.config.animation.duration, this.config.animation.offset);
+      animateIn(pane, this.config.animation.type, this.config.animation.duration, this.config.animation.offset, this.config.animation.easing);
 
       this.isAnimating = false;
     };
@@ -146,6 +62,7 @@ class TabsController {
         this.config.animation.type,
         this.config.animation.duration,
         this.config.animation.offset,
+        this.config.animation.easing,
         openNext
       );
     } else {
