@@ -12,8 +12,8 @@
 declare const Webflow: any;
 declare const Vimeo: any;
 
-import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_DIALOG, ATTR_PETAL_TRIGGER_TOGGLE, ATTR_PETAL_STATE } from "../../lib/attributes";
-import { findPetalElementByNameOrInParent, getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent, pauseVideo } from "../../lib/helpers";
+import { ATTR_PETAL_MODAL, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER, ATTR_PETAL_STATE } from "../../lib/attributes";
+import { getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent, pauseVideo } from "../../lib/helpers";
 import { parseModalConfig, logConfig, ModalConfig } from "./modal-config";
 import { debug, debugElements } from "../../lib/debug";
 import { storeClosedState, storeMemoryWithExpiration, checkMemory } from "../../lib/memory";
@@ -21,7 +21,6 @@ import { lockScroll, unlockScroll } from "../../lib/scroll-lock";
 
 export interface ModalElements {
   modal: HTMLElement;
-  dialog: HTMLElement;
   openTriggers: NodeListOf<HTMLElement>;
   closeTriggers: NodeListOf<HTMLElement>;
   toggleTriggers: NodeListOf<HTMLElement>;
@@ -63,7 +62,7 @@ class ModalController {
       }
 
       // Play Vimeo video if autoplay is enabled
-      if (this.config.videoAutoplay && this.vimeoPlayer) {
+      if (this.config.video.autoplay && this.vimeoPlayer) {
         this.vimeoPlayer.play().catch(() => {
           // Silently handle autoplay errors
         });
@@ -71,7 +70,7 @@ class ModalController {
 
       // Trigger the GSAP animation in Webflow
       const wfIx = Webflow.require("ix3");
-      wfIx.emit(this.config.animOpen);
+      wfIx.emit(this.config.animation.open);
     } catch (error) {
       // If animation fails, unlock scroll to prevent permanent lock
       if (this.config.lockScroll) {
@@ -101,7 +100,7 @@ class ModalController {
       }
 
       // Pause Vimeo video if autopause is enabled
-      if (this.config.videoAutopause && this.vimeoPlayer) {
+      if (this.config.video.autopause && this.vimeoPlayer) {
         this.vimeoPlayer.pause().catch(() => {
           // Silently handle pause errors
         });
@@ -120,7 +119,7 @@ class ModalController {
 
       // Trigger the GSAP animation in Webflow
       const wfIx = Webflow.require("ix3");
-      wfIx.emit(this.config.animClose);
+      wfIx.emit(this.config.animation.close);
     } catch (error) {
       console.error(`[ERROR] Modal "${this.config.name}" - Failed to close:`, error);
     }
@@ -158,7 +157,7 @@ class ModalController {
       return;
     }
 
-    if (!this.config.videoAutoplay && !this.config.videoAutopause) {
+    if (!this.config.video.autoplay && !this.config.video.autopause) {
       return;
     }
 
@@ -196,7 +195,6 @@ export function initializeAllModals(): void {
     // ===========================
     // Element References
     // ===========================
-    const dialog = findPetalElementByNameOrInParent(modal, name, ATTR_PETAL_DIALOG);
     const openTriggers = findTriggersByNameOrInParent(modal, name, "open");
     const closeTriggers = findTriggersByNameOrInParent(modal, name, "close");
     const toggleTriggers = findTriggersByNameOrInParent(modal, name, "toggle");
@@ -205,14 +203,13 @@ export function initializeAllModals(): void {
     debugElements(config.debug, "MODAL", "close trigger", closeTriggers);
     debugElements(config.debug, "MODAL", "toggle trigger", toggleTriggers);
 
-    if (!dialog || !openTriggers || !closeTriggers) {
-      console.error(`[ERROR] Modal "${name}" is missing required elements. Ensure dialog, open triggers, and close triggers are present.`);
+    if (!openTriggers || !closeTriggers) {
+      console.error(`[ERROR] Modal "${name}" is missing required elements. Ensure open triggers and close triggers are present.`);
       return;
     }
 
     const elements: ModalElements = {
       modal,
-      dialog,
       openTriggers,
       closeTriggers,
       toggleTriggers,
@@ -253,7 +250,7 @@ export function initializeAllModals(): void {
 
     // Find and attach close triggers without names (that are children of this modal)
     if (!name) {
-      const allCloseTriggers = [...Array.from(document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER_TOGGLE}="close"]`))];
+      const allCloseTriggers = [...Array.from(document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="close"]`))];
       allCloseTriggers.forEach((trigger) => {
         // Check if this close trigger doesn't have a name and is a child of this modal
         const triggerName = trigger.getAttribute(ATTR_PETAL_NAME);

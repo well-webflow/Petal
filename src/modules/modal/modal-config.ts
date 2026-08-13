@@ -25,10 +25,14 @@ export interface ModalConfig {
   debug: boolean;
   lockScroll: boolean;
   closeOnResize: boolean;
-  videoAutoplay: boolean;
-  videoAutopause: boolean;
-  animOpen?: string | null;
-  animClose?: string | null;
+  animation: {
+    open?: string | null;
+    close?: string | null;
+  };
+  video: {
+    autoplay: boolean;
+    autopause: boolean;
+  };
   autoOpen?: boolean;
   autoOpenDelay?: Date | undefined;
   memory: {
@@ -64,10 +68,14 @@ export function parseModalConfig(modal: Element): ModalConfig {
     debug,
     lockScroll,
     closeOnResize,
-    videoAutoplay,
-    videoAutopause,
-    animOpen,
-    animClose,
+    animation: {
+      open: animOpen,
+      close: animClose,
+    },
+    video: {
+      autoplay: videoAutoplay,
+      autopause: videoAutopause,
+    },
     autoOpen,
     autoOpenDelay,
     memory: {
