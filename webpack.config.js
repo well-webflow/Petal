@@ -11,7 +11,7 @@ module.exports = {
         filename: isProduction ? 'petal.min.js' : 'petal.js',  // Output bundle file
         library: 'petal',   // Name of the global variable if your package is used in the browser
         libraryTarget: 'umd',   // Universal module definition, for browser and Node.js
-        globalObject: 'this',   // Ensures compatibility in different environments
+        globalObject: 'window',   // Use window for browser environments
     },
     module: {
         rules: [

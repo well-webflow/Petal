@@ -203,7 +203,7 @@ export function initializeAllModals(): void {
     debugElements(config.debug, "MODAL", "close trigger", closeTriggers);
     debugElements(config.debug, "MODAL", "toggle trigger", toggleTriggers);
 
-    if (!openTriggers || !closeTriggers) {
+    if ((!openTriggers || !closeTriggers) && !toggleTriggers) {
       console.error(`[ERROR] Modal "${name}" is missing required elements. Ensure open triggers and close triggers are present.`);
       return;
     }
