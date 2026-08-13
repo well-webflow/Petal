@@ -160,8 +160,11 @@ export function initializeSimpleDropdowns(): void {
     // ===========================
     const controller = new DropdownController(elements, config);
 
-    // Set initial state
+    // Set initial state and hide menu by default
     menu.setAttribute(ATTR_PETAL_STATE, "closed");
+    if (!config.startOpen) {
+      menu.style.display = "none";
+    }
 
     // Add click listener
     toggle.addEventListener("click", () => {
