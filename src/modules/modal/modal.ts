@@ -55,7 +55,6 @@ class ModalController {
       // Lock scroll if configured
       if (this.config.lockScroll) {
         lockScroll();
-        if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Locked scroll`);
       }
 
       // Setup resize handler if close-on-resize is enabled
@@ -65,10 +64,8 @@ class ModalController {
 
       // Play Vimeo video if autoplay is enabled
       if (this.config.videoAutoplay && this.vimeoPlayer) {
-        this.vimeoPlayer.play().catch((error: any) => {
-          if (this.config.debug) {
-            console.log(`[DEBUG] Modal "${this.config.name}" - Could not autoplay Vimeo video:`, error);
-          }
+        this.vimeoPlayer.play().catch(() => {
+          // Silently handle autoplay errors
         });
       }
 
@@ -79,7 +76,6 @@ class ModalController {
       // If animation fails, unlock scroll to prevent permanent lock
       if (this.config.lockScroll) {
         unlockScroll();
-        if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Unlocked scroll due to error`);
       }
       console.error(`[ERROR] Modal "${this.config.name}" - Failed to open:`, error);
     }
@@ -96,7 +92,6 @@ class ModalController {
       // Unlock scroll if configured
       if (this.config.lockScroll) {
         unlockScroll();
-        if (this.config.debug) console.log(`[DEBUG] Modal "${this.config.name}" - Unlocked scroll`);
       }
 
       // Remove resize handler if it exists
@@ -107,10 +102,8 @@ class ModalController {
 
       // Pause Vimeo video if autopause is enabled
       if (this.config.videoAutopause && this.vimeoPlayer) {
-        this.vimeoPlayer.pause().catch((error: any) => {
-          if (this.config.debug) {
-            console.log(`[DEBUG] Modal "${this.config.name}" - Could not pause Vimeo video:`, error);
-          }
+        this.vimeoPlayer.pause().catch(() => {
+          // Silently handle pause errors
         });
       }
 
@@ -123,9 +116,6 @@ class ModalController {
       // Store memory with expiration if memory is enabled
       if (this.config.memory.enabled && this.config.memory.expires) {
         storeMemoryWithExpiration("modal", this.config.name, this.config.memory.expires);
-        if (this.config.debug) {
-          console.log(`[DEBUG] Modal "${this.config.name}" - Stored in memory until ${this.config.memory.expires.toISOString()}`);
-        }
       }
 
       // Trigger the GSAP animation in Webflow
@@ -151,9 +141,6 @@ class ModalController {
 
       // Only close if actual dimensions changed
       if (currentWidth !== this.lastWidth || currentHeight !== this.lastHeight) {
-        if (this.config.debug) {
-          console.log(`[DEBUG] Modal "${this.config.name}" - Window resized from ${this.lastWidth}x${this.lastHeight} to ${currentWidth}x${currentHeight}`);
-        }
         this.close();
       }
     };
@@ -180,9 +167,6 @@ class ModalController {
     if (vimeoIframe) {
       try {
         this.vimeoPlayer = new Vimeo.Player(vimeoIframe);
-        if (this.config.debug) {
-          console.log(`[DEBUG] Modal "${this.config.name}" - Initialized Vimeo player`);
-        }
       } catch (error) {
         console.error(`[ERROR] Modal "${this.config.name}" - Failed to initialize Vimeo player:`, error);
       }
