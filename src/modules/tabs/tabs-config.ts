@@ -16,6 +16,7 @@ export const ATTR_PETAL_ANIM = "petal-anim";
 export const ATTR_PETAL_ANIM_DURATION = "petal-anim-duration";
 export const ATTR_PETAL_ANIM_OFFSET = "petal-anim-offset";
 export const ATTR_PETAL_ANIM_EASING = "petal-anim-easing";
+export const ATTR_PETAL_TAB_CHANGE_ANIM = "petal-anim-tab-change";
 
 export interface TabsConfig {
   name: string;
@@ -26,6 +27,7 @@ export interface TabsConfig {
     offset: number;
     easing: EasingType;
   };
+  tabChangeAnimation?: string;
 }
 
 /**
@@ -39,6 +41,7 @@ export function parseTabsConfig(tabsWrapper: Element): TabsConfig {
   const animDuration = parseFloat(tabsWrapper.getAttribute(ATTR_PETAL_ANIM_DURATION) || "0.3");
   const animOffset = parseFloat(tabsWrapper.getAttribute(ATTR_PETAL_ANIM_OFFSET) || "30");
   const animEasing = (tabsWrapper.getAttribute(ATTR_PETAL_ANIM_EASING) || "power1.out") as EasingType;
+  const tabChangeAnim = tabsWrapper.getAttribute(ATTR_PETAL_TAB_CHANGE_ANIM) || undefined;
 
   return {
     name,
@@ -49,6 +52,7 @@ export function parseTabsConfig(tabsWrapper: Element): TabsConfig {
       offset: animOffset,
       easing: animEasing,
     },
+    tabChangeAnimation: tabChangeAnim,
   };
 }
 

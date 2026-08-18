@@ -118,7 +118,16 @@ export function initializeAllTabs(): void {
 
       link.addEventListener("click", () => {
         const pane = panes[linkIndex];
-        if (pane) {
+        if (pane && pane.getAttribute(ATTR_PETAL_STATE) !== "active") {
+          // Trigger optional tab-change animation before switching
+          if (config.tabChangeAnimation && typeof gsap !== "undefined") {
+            try {
+              const animConfig = JSON.parse(config.tabChangeAnimation);
+              gsap.to(link, animConfig);
+            } catch (e) {
+              console.warn(`Invalid tab-change animation config: ${config.tabChangeAnimation}`);
+            }
+          }
           controller.switchPane(pane, linkIndex);
         }
       });

@@ -108,7 +108,9 @@ export function animateIn(element: HTMLElement, type: AnimationType, duration: n
 export function setActive(el: HTMLElement, active: boolean): void {
   if (active) {
     el.setAttribute("petal-state", "active");
+    el.classList.add("is-active");
   } else {
     el.setAttribute("petal-state", "inactive");
+    el.classList.remove("is-active");
   }
 }
