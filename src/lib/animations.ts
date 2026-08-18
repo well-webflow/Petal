@@ -66,14 +66,7 @@ function getOffset(type: AnimationType, offset: number): { x: number; y: number 
 /**
  * Animate element out (hide with animation)
  */
-export function animateOut(
-  element: HTMLElement,
-  type: AnimationType,
-  duration: number,
-  offset: number,
-  easing: EasingType,
-  onComplete: () => void
-): void {
+export function animateOut(element: HTMLElement, type: AnimationType, duration: number, offset: number, easing: EasingType, onComplete: () => void): void {
   if (type === "none") {
     element.style.display = "none";
     onComplete();
@@ -97,13 +90,7 @@ export function animateOut(
 /**
  * Animate element in (show with animation)
  */
-export function animateIn(
-  element: HTMLElement,
-  type: AnimationType,
-  duration: number,
-  offset: number,
-  easing: EasingType
-): void {
+export function animateIn(element: HTMLElement, type: AnimationType, duration: number, offset: number, easing: EasingType): void {
   element.style.display = "flex";
 
   if (type === "none") {
@@ -121,9 +108,7 @@ export function animateIn(
 export function setActive(el: HTMLElement, active: boolean): void {
   if (active) {
     el.setAttribute("petal-state", "active");
-    el.classList.add("is-active");
   } else {
     el.setAttribute("petal-state", "inactive");
-    el.classList.remove("is-active");
   }
 }
