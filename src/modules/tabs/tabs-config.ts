@@ -17,10 +17,12 @@ export const ATTR_PETAL_ANIM_DURATION = "petal-anim-duration";
 export const ATTR_PETAL_ANIM_OFFSET = "petal-anim-offset";
 export const ATTR_PETAL_ANIM_EASING = "petal-anim-easing";
 export const ATTR_PETAL_TAB_CHANGE_ANIM = "petal-anim-tab-change";
+export const ATTR_PETAL_HOVER_ENABLED = "petal-hover-enabled";
 
 export interface TabsConfig {
   name: string;
   debug: boolean;
+  hoverEnabled: boolean;
   animation: {
     type: AnimationType;
     duration: number;
@@ -36,6 +38,7 @@ export interface TabsConfig {
 export function parseTabsConfig(tabsWrapper: Element): TabsConfig {
   const name = tabsWrapper.getAttribute(ATTR_PETAL_NAME) || "unknown";
   const debug = parseBoolean(tabsWrapper.getAttribute(ATTR_PETAL_DEBUG)) ?? false;
+  const hoverEnabled = parseBoolean(tabsWrapper.getAttribute(ATTR_PETAL_HOVER_ENABLED)) ?? false;
 
   const animType = (tabsWrapper.getAttribute(ATTR_PETAL_ANIM) || "fade") as AnimationType;
   const animDuration = parseFloat(tabsWrapper.getAttribute(ATTR_PETAL_ANIM_DURATION) || "0.3");
@@ -46,6 +49,7 @@ export function parseTabsConfig(tabsWrapper: Element): TabsConfig {
   return {
     name,
     debug,
+    hoverEnabled,
     animation: {
       type: animType,
       duration: animDuration,

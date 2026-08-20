@@ -116,7 +116,7 @@ export function initializeAllTabs(): void {
     links.forEach((link, linkIndex) => {
       setActive(link, linkIndex === 0);
 
-      link.addEventListener("click", () => {
+      const switchTab = () => {
         const pane = panes[linkIndex];
         if (pane && pane.getAttribute(ATTR_PETAL_STATE) !== "active") {
           // Trigger optional tab-change animation before switching
@@ -130,7 +130,13 @@ export function initializeAllTabs(): void {
           }
           controller.switchPane(pane, linkIndex);
         }
-      });
+      };
+
+      link.addEventListener("click", switchTab);
+
+      if (config.hoverEnabled) {
+        link.addEventListener("mouseenter", switchTab);
+      }
     });
 
     panes.forEach((pane, paneIndex) => {
