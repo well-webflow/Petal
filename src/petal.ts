@@ -5,7 +5,17 @@ import { initializeAllDropdowns } from "./modules/dropdown/dropdown";
 
 console.log(`🌸 Hello from Wellflow Petal v${APP_VERSION}`);
 
-initializeAllModals();
-initializeBanner();
-initializeAllTabs();
-initializeAllDropdowns();
+function initializePetal() {
+  initializeAllModals();
+  initializeBanner();
+  initializeAllTabs();
+  initializeAllDropdowns();
+}
+
+// Wait for DOM to be ready before initializing
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializePetal);
+} else {
+  // DOM is already ready, initialize immediately
+  initializePetal();
+}

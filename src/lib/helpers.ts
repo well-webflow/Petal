@@ -91,23 +91,14 @@ export function findTriggersByType(triggerType: string, name?: string | null): N
  * @returns NodeList of matching trigger elements
  */
 export function findTriggersByNameOrInParent(parent: HTMLElement, name: string | null, triggerType: string): NodeListOf<HTMLElement> {
-  console.log(`[DEBUG] findTriggersByNameOrInParent called with:`, { name, triggerType });
-
   // First try to find by name globally
   if (name) {
-    const selector = `[${ATTR_PETAL_NAME}="${name}"][${ATTR_PETAL_TRIGGER}="${triggerType}"]`;
-    console.log(`[DEBUG] Searching globally with selector:`, selector);
-    const globalMatch = document.querySelectorAll<HTMLElement>(selector);
-    console.log(`[DEBUG] Global search found ${globalMatch.length} triggers:`, globalMatch);
+    const globalMatch = document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_NAME}="${name}"][${ATTR_PETAL_TRIGGER}="${triggerType}"]`);
     if (globalMatch && globalMatch.length > 0) return globalMatch;
   }
 
   // If no name match, try to find within the parent
-  const fallbackSelector = `[${ATTR_PETAL_TRIGGER}="${triggerType}"]`;
-  console.log(`[DEBUG] Searching within parent with selector:`, fallbackSelector);
-  const parentMatch = parent.querySelectorAll<HTMLElement>(fallbackSelector);
-  console.log(`[DEBUG] Parent search found ${parentMatch.length} triggers:`, parentMatch);
-  return parentMatch;
+  return parent.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="${triggerType}"]`);
 }
 
 export function parseNumber(raw: string | null): number | undefined {
