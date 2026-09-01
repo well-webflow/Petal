@@ -53,16 +53,34 @@ export const ATTR_PETAL_OVERLAY_OPACITY = "petal-overlay-opacity";
 export const ATTR_PETAL_OVERLAY_CLOSE = "petal-overlay-close";
 
 /**-------------------------*
- * MODAL
+ * POPUP
  *--------------------------*/
 
 // ELEMENTS
-export const ATTR_PETAL_MODAL = "modal";
-export const ATTR_PETAL_DIALOG = "dialog";
+export const ATTR_PETAL_POPUP = "popup";
+export const ATTR_PETAL_POPUP_BOX = "popup-box";
+export const ATTR_PETAL_POPUP_OVERLAY = "popup-overlay";
 
 // AUTO OPEN
 export const ATTR_PETAL_AUTO_OPEN = "petal-auto-open";
 export const ATTR_PETAL_AUTO_OPEN_DELAY = "petal-auto-open-delay";
+
+// POPUP ANIMATIONS
+export const ATTR_PETAL_POPUP_ANIM = "petal-popup-anim";
+export const ATTR_PETAL_POPUP_ANIM_DURATION = "petal-popup-anim-duration";
+export const ATTR_PETAL_POPUP_ANIM_OFFSET = "petal-popup-anim-offset";
+export const ATTR_PETAL_POPUP_ANIM_EASING = "petal-popup-anim-easing";
+
+// POPUP BOX ANIMATIONS
+export const ATTR_PETAL_POPUP_BOX_ANIM = "petal-popup-box-anim";
+export const ATTR_PETAL_POPUP_BOX_ANIM_DURATION = "petal-popup-box-anim-duration";
+export const ATTR_PETAL_POPUP_BOX_ANIM_OFFSET = "petal-popup-box-anim-offset";
+export const ATTR_PETAL_POPUP_BOX_ANIM_EASING = "petal-popup-box-anim-easing";
+
+// POPUP OVERLAY ANIMATIONS
+export const ATTR_PETAL_POPUP_OVERLAY_ANIM = "petal-popup-overlay-anim";
+export const ATTR_PETAL_POPUP_OVERLAY_ANIM_DURATION = "petal-popup-overlay-anim-duration";
+export const ATTR_PETAL_POPUP_OVERLAY_ANIM_EASING = "petal-popup-overlay-anim-easing";
 
 /**-------------------------*
  * VIDEO

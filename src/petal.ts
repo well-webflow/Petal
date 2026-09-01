@@ -1,4 +1,4 @@
-import { initializeAllModals } from "./modules/modal/modal";
+import { initializeAllPopups } from "./modules/popup/popup";
 import { initializeBanner } from "./modules/banner/banner";
 import { initializeAllTabs } from "./modules/tabs/tabs";
 import { initializeAllDropdowns } from "./modules/dropdown/dropdown";
@@ -6,7 +6,7 @@ import { initializeAllDropdowns } from "./modules/dropdown/dropdown";
 console.log(`🌸 Hello from Wellflow Petal v${APP_VERSION}`);
 
 function initializePetal() {
-  initializeAllModals();
+  initializeAllPopups();
   initializeBanner();
   initializeAllTabs();
   initializeAllDropdowns();

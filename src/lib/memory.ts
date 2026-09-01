@@ -1,9 +1,9 @@
 // MEMORY
-type MemoryItem = "modal" | "banner";
+type MemoryItem = "popup" | "banner";
 
 /**
  * Store Closed State in Session Storage
- * @param type The type of element (modal or banner)
+ * @param type The type of element (popup or banner)
  * @param name The name of the Petal Element to store
  */
 export function storeClosedState(type: MemoryItem, name: string) {
@@ -13,7 +13,7 @@ export function storeClosedState(type: MemoryItem, name: string) {
 
 /**
  * Check Closed State in Session Storage
- * @param type The type of element (modal or banner)
+ * @param type The type of element (popup or banner)
  * @param name The name of the Petal Element to check
  * @param sessionTTLMinutes The length that the session is valid for (in minutes)
  * @returns True if the element has been closed in this session and the session is still valid, false otherwise
@@ -43,7 +43,7 @@ export function checkClosedState(type: MemoryItem, name: string, sessionTTLMinut
 
 /**
  * Clear Closed State from Session Storage
- * @param type The type of element (modal or banner)
+ * @param type The type of element (popup or banner)
  * @param name The name of the Petal Element to clear
  */
 export function clearClosedState(type: MemoryItem, name: string) {
@@ -52,7 +52,7 @@ export function clearClosedState(type: MemoryItem, name: string) {
 
 /**
  * Store Closed State in Local Storage with expiration Date
- * @param type The type of element (modal or banner)
+ * @param type The type of element (popup or banner)
  * @param name The name of the Petal Element to store
  * @param expiresAt The Date when this memory expires
  */
@@ -62,7 +62,7 @@ export function storeMemoryWithExpiration(type: MemoryItem, name: string, expire
 
 /**
  * Check if element is in memory (was closed and not yet expired)
- * @param type The type of element (modal or banner)
+ * @param type The type of element (popup or banner)
  * @param name The name of the Petal Element to check
  * @returns True if the element is in memory and not expired, false if expired or not found
  */
@@ -90,7 +90,7 @@ export function checkMemory(type: MemoryItem, name: string): boolean {
 
 /**
  * Clear Memory from Local Storage
- * @param type The type of element (modal or banner)
+ * @param type The type of element (popup or banner)
  * @param name The name of the Petal Element to clear
  */
 export function clearMemory(type: MemoryItem, name: string) {
