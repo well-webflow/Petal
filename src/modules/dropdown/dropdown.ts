@@ -278,6 +278,10 @@ function getGroup(dropdown: HTMLElement, groups: Map<HTMLElement, DropdownGroup>
   const groupEl = dropdown.parentElement?.closest<HTMLElement>(petalSelector(ATTR_PETAL_DROPDOWN_GROUP));
   if (!groupEl) return null;
 
+  // A dropdown nested inside another dropdown of the group isn't a member, so it doesn't close its parent
+  const parentDropdown = dropdown.parentElement?.closest(petalSelector(ATTR_PETAL_DROPDOWN));
+  if (parentDropdown && groupEl.contains(parentDropdown)) return null;
+
   let group = groups.get(groupEl);
   if (!group) {
     group = new DropdownGroup(groupEl.querySelector<HTMLElement>(petalSelector(ATTR_PETAL_DROPDOWN_GROUP_BG)));
