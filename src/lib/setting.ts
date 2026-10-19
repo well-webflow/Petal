@@ -72,6 +72,15 @@ export function getCurrentSettingValue<T>(values: PetalSetting<T>): T | undefine
 }
 
 /**
+ * Calls the callback whenever the window crosses one of the breakpoint thresholds.
+ */
+export function onBreakpointChange(callback: () => void): void {
+  [BREAKPOINT_MOBILE, BREAKPOINT_MOBILE_LANDSCAPE, BREAKPOINT_TABLET].forEach((breakpoint) => {
+    window.matchMedia(`(max-width: ${breakpoint}px)`).addEventListener("change", callback);
+  });
+}
+
+/**
  * Returns the value for the current breakpoint with fallback logic.
  * Priority: mobile → mobileLandscape → tablet → desktop (narrowest match wins).
  *

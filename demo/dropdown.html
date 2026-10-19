@@ -186,7 +186,7 @@
       color: #667eea;
     }
 
-    [petal-el="dropdown-bg"] {
+    [petal-el="dropdown-group-bg"] {
       position: absolute;
       top: 100%;
       left: 0;
@@ -299,7 +299,7 @@
 
     <!-- SIMPLE DROPDOWNS SECTION -->
     <section class="section">
-      <h2>Simple Dropdowns</h2>
+      <h2>Dropdowns</h2>
 
       <div class="demo-grid">
         <!-- Click Mode (Default) -->
@@ -458,6 +458,67 @@
 &lt;/div&gt;
           </div>
         </div>
+
+        <!-- Group -->
+        <div class="demo-card">
+          <span class="feature-badge">GROUP</span>
+          <h3>One Open at a Time</h3>
+          <p>Dropdowns inside a group close each other. Switching while one is open skips the animation.</p>
+
+          <div petal-el="dropdown-group" style="display: flex; gap: 10px;">
+            <div petal-el="dropdown" petal="group-first">
+              <button petal-el="dropdown-toggle">
+                First
+                <span petal-el="dropdown-caret">▼</span>
+              </button>
+              <div petal-el="dropdown-menu">
+                <a href="#">First 1</a>
+                <a href="#">First 2</a>
+              </div>
+            </div>
+            <div petal-el="dropdown" petal="group-second">
+              <button petal-el="dropdown-toggle">
+                Second
+                <span petal-el="dropdown-caret">▼</span>
+              </button>
+              <div petal-el="dropdown-menu">
+                <a href="#">Second 1</a>
+                <a href="#">Second 2</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown-group"</span>&gt;
+  &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span>&gt;...&lt;/div&gt;
+  &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span>&gt;...&lt;/div&gt;
+&lt;/div&gt;
+          </div>
+        </div>
+
+        <!-- Breakpoint -->
+        <div class="demo-card">
+          <span class="feature-badge">BREAKPOINT</span>
+          <h3>Desktop Only</h3>
+          <p>Disabled at tablet width (991px) and below, where your CSS controls the menu.</p>
+
+          <div petal-el="dropdown" petal="simple-desktop-only" petal-dropdown-enabled-tablet="false">
+            <button petal-el="dropdown-toggle">
+              Desktop Only
+              <span petal-el="dropdown-caret">▼</span>
+            </button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Wide screens</a>
+              <a href="#">Only</a>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;div <span class="attr">petal-dropdown-enabled-tablet</span>=<span class="value">"false"</span>&gt;
+  ...
+&lt;/div&gt;
+          </div>
+        </div>
       </div>
     </section>
 
@@ -466,21 +527,21 @@
       <h2>Mega Dropdowns</h2>
 
       <div class="info-box">
-        <strong>Note:</strong> Mega dropdowns feature a shared animated background that adjusts to the height of the active menu. Only one mega dropdown can be open at a time.
+        <strong>Note:</strong> A mega dropdown is a group of dropdowns with a Group Background. Wrap the dropdowns in <code>petal-el="dropdown-group"</code>. Adding a <code>petal-el="dropdown-group-bg"</code> inside the group turns on the shared background, which resizes to fit the open menu. Only one dropdown in a group can be open at a time. The animation plays when the group opens from closed or fully closes. Moving between menus while one is open swaps them instantly.
         <br><br>
-        <strong>Window width:</strong> Mega dropdowns only work when the window is at least 992px wide. Below that they turn off, and your CSS decides how the menus look (for example, inside a mobile nav). Widen the window to try them out.
+        <strong>Breakpoints:</strong> <code>petal-dropdown-enabled</code> turns dropdown behavior on or off. Add <code>-tablet</code> (≤991px), <code>-mobile-landscape</code> (≤767px) or <code>-mobile</code> (≤479px) to set it per breakpoint. These mega navs use <code>petal-dropdown-enabled-tablet="false"</code>, so they need a window at least 992px wide. Below that, your CSS decides how the menus look (for example, inside a mobile nav).
       </div>
 
-      <!-- Hover Mode Mega (Default) -->
+      <!-- Hover Mode Mega -->
       <div style="margin-top: 30px;">
         <span class="feature-badge">HOVER MODE</span>
-        <h3 style="margin: 10px 0;">Mega Navigation - Hover (Default)</h3>
+        <h3 style="margin: 10px 0;">Mega Navigation - Hover</h3>
         <p style="margin-bottom: 20px; color: #666;">Hover over navigation items to reveal mega menus with the animated background.</p>
 
-        <nav class="mega-nav">
-          <div petal-el="dropdown-bg"></div>
+        <nav class="mega-nav" petal-el="dropdown-group">
+          <div petal-el="dropdown-group-bg"></div>
           <div class="mega-nav-inner">
-            <div petal-el="dropdown" petal-dropdown-type="mega" petal="mega-products">
+            <div petal-el="dropdown" petal-dropdown-interaction="hover" petal-dropdown-enabled-tablet="false" petal="mega-products">
               <button petal-el="dropdown-toggle">Products</button>
               <div petal-el="dropdown-menu">
                 <div class="mega-menu-grid">
@@ -509,7 +570,7 @@
               </div>
             </div>
 
-            <div petal-el="dropdown" petal-dropdown-type="mega" petal="mega-solutions">
+            <div petal-el="dropdown" petal-dropdown-interaction="hover" petal-dropdown-enabled-tablet="false" petal="mega-solutions">
               <button petal-el="dropdown-toggle">Solutions</button>
               <div petal-el="dropdown-menu">
                 <div class="mega-menu-grid">
@@ -535,7 +596,7 @@
               </div>
             </div>
 
-            <div petal-el="dropdown" petal-dropdown-type="mega" petal="mega-company">
+            <div petal-el="dropdown" petal-dropdown-interaction="hover" petal-dropdown-enabled-tablet="false" petal="mega-company">
               <button petal-el="dropdown-toggle">Company</button>
               <div petal-el="dropdown-menu">
                 <div class="mega-menu-grid">
@@ -564,10 +625,11 @@
         </nav>
 
         <div class="code-snippet">
-&lt;nav&gt;
-  &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown-bg"</span>&gt;&lt;/div&gt;
+&lt;nav <span class="attr">petal-el</span>=<span class="value">"dropdown-group"</span>&gt;
+  &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown-group-bg"</span>&gt;&lt;/div&gt;
   &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span>
-       <span class="attr">petal-dropdown-type</span>=<span class="value">"mega"</span>&gt;
+       <span class="attr">petal-dropdown-interaction</span>=<span class="value">"hover"</span>
+       <span class="attr">petal-dropdown-enabled-tablet</span>=<span class="value">"false"</span>&gt;
     &lt;button <span class="attr">petal-el</span>=<span class="value">"dropdown-toggle"</span>&gt;...&lt;/button&gt;
     &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown-menu"</span>&gt;...&lt;/div&gt;
   &lt;/div&gt;
@@ -581,10 +643,10 @@
         <h3 style="margin: 10px 0;">Mega Navigation - Click</h3>
         <p style="margin-bottom: 20px; color: #666;">Click navigation items to toggle mega menus. Click outside to close.</p>
 
-        <nav class="mega-nav">
-          <div petal-el="dropdown-bg"></div>
+        <nav class="mega-nav" petal-el="dropdown-group">
+          <div petal-el="dropdown-group-bg"></div>
           <div class="mega-nav-inner">
-            <div petal-el="dropdown" petal-dropdown-type="mega" petal-dropdown-interaction="click" petal="mega-click-features">
+            <div petal-el="dropdown" petal-dropdown-enabled-tablet="false" petal="mega-click-features">
               <button petal-el="dropdown-toggle">Features</button>
               <div petal-el="dropdown-menu">
                 <div class="mega-menu-grid">
@@ -610,7 +672,7 @@
               </div>
             </div>
 
-            <div petal-el="dropdown" petal-dropdown-type="mega" petal-dropdown-interaction="click" petal="mega-click-docs" petal-anim="slide-down">
+            <div petal-el="dropdown" petal-dropdown-enabled-tablet="false" petal="mega-click-docs" petal-anim="slide-down">
               <button petal-el="dropdown-toggle">Documentation</button>
               <div petal-el="dropdown-menu">
                 <div class="mega-menu-grid">
@@ -637,8 +699,8 @@
 
         <div class="code-snippet">
 &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span>
-     <span class="attr">petal-dropdown-type</span>=<span class="value">"mega"</span>
-     <span class="attr">petal-dropdown-interaction</span>=<span class="value">"click"</span>&gt;
+     <span class="attr">petal-dropdown-interaction</span>=<span class="value">"click"</span>
+     <span class="attr">petal-dropdown-enabled-tablet</span>=<span class="value">"false"</span>&gt;
   ...
 &lt;/div&gt;
         </div>

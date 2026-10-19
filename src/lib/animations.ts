@@ -112,6 +112,22 @@ export function clearAnimation(element: HTMLElement): void {
 }
 
 /**
+ * Show element immediately, cancelling any running animation
+ */
+export function showInstantly(element: HTMLElement): void {
+  clearAnimation(element);
+  element.style.display = "flex";
+}
+
+/**
+ * Hide element immediately, cancelling any running animation
+ */
+export function hideInstantly(element: HTMLElement): void {
+  clearAnimation(element);
+  element.style.display = "none";
+}
+
+/**
  * Set active state on an element
  */
 export function setActive(el: HTMLElement, active: boolean): void {
