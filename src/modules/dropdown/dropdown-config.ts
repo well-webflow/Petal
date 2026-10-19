@@ -15,6 +15,7 @@ export const ATTR_PETAL_DROPDOWN_MENU = "dropdown-menu";
 export const ATTR_PETAL_DROPDOWN_CARET = "dropdown-caret";
 export const ATTR_PETAL_DROPDOWN_BG = "dropdown-bg";
 export const ATTR_PETAL_DROPDOWN_TYPE = "petal-dropdown-type";
+export const ATTR_PETAL_DROPDOWN_INTERACTION = "petal-dropdown-interaction";
 export const ATTR_PETAL_DROPDOWN_START_OPEN = "petal-dropdown-start-open";
 export const ATTR_PETAL_ANIM = "petal-anim";
 export const ATTR_PETAL_ANIM_DURATION = "petal-anim-duration";
@@ -22,11 +23,13 @@ export const ATTR_PETAL_ANIM_OFFSET = "petal-anim-offset";
 export const ATTR_PETAL_ANIM_EASING = "petal-anim-easing";
 
 export type DropdownType = "simple" | "mega";
+export type DropdownInteraction = "click" | "hover";
 
 export interface DropdownConfig {
   name: string;
   debug: boolean;
   type: DropdownType;
+  interaction: DropdownInteraction;
   startOpen: boolean;
   animation: {
     type: AnimationType;
@@ -43,6 +46,11 @@ export function parseDropdownConfig(dropdown: Element): DropdownConfig {
   const name = dropdown.getAttribute(ATTR_PETAL_NAME) || "unknown";
   const debug = parseBoolean(dropdown.getAttribute(ATTR_PETAL_DEBUG)) ?? false;
   const type = (dropdown.getAttribute(ATTR_PETAL_DROPDOWN_TYPE) || "simple") as DropdownType;
+
+  // Default interaction mode based on type: mega=hover, simple=click
+  const defaultInteraction: DropdownInteraction = type === "mega" ? "hover" : "click";
+  const interaction = (dropdown.getAttribute(ATTR_PETAL_DROPDOWN_INTERACTION) || defaultInteraction) as DropdownInteraction;
+
   const startOpen = parseBoolean(dropdown.getAttribute(ATTR_PETAL_DROPDOWN_START_OPEN)) ?? false;
 
   const animType = (dropdown.getAttribute(ATTR_PETAL_ANIM) || "fade") as AnimationType;
@@ -54,6 +62,7 @@ export function parseDropdownConfig(dropdown: Element): DropdownConfig {
     name,
     debug,
     type,
+    interaction,
     startOpen,
     animation: {
       type: animType,

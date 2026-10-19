@@ -2,7 +2,7 @@
  * -+-+-+ Simple Dropdown -+-+-+
  *
  * Handles interactive simple dropdown components with support for:
- * - Click to toggle open/close
+ * - Click or hover interaction modes
  * - GSAP animations (fade, slide)
  * - Caret rotation animation
  * - Start-open configuration
@@ -166,10 +166,32 @@ export function initializeSimpleDropdowns(): void {
       menu.style.display = "none";
     }
 
-    // Add click listener
-    toggle.addEventListener("click", () => {
-      controller.toggle();
-    });
+    // Add interaction listeners based on mode
+    if (config.interaction === "click") {
+      toggle.addEventListener("click", () => {
+        controller.toggle();
+      });
+    } else if (config.interaction === "hover") {
+      // Track timeout for delayed closing
+      let closeTimeout: ReturnType<typeof setTimeout> | null = null;
+      const HOVER_DELAY = 200; // ms before closing on mouse leave
+
+      toggle.addEventListener("mouseenter", () => {
+        if (closeTimeout) clearTimeout(closeTimeout);
+        controller.open();
+      });
+
+      dropdown.addEventListener("mouseleave", () => {
+        closeTimeout = setTimeout(() => {
+          controller.close();
+        }, HOVER_DELAY);
+      });
+
+      // Cancel close when mouse enters menu
+      menu.addEventListener("mouseenter", () => {
+        if (closeTimeout) clearTimeout(closeTimeout);
+      });
+    }
 
     // Handle start-open
     if (config.startOpen) {

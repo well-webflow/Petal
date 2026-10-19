@@ -57,6 +57,10 @@ module.exports = {
         compress: true,
         port: 8080,
         hot: true,
+        devMiddleware: {
+            // Serve the bundle at /dist/ so demo pages can use ../dist/petal.js both here and over file://
+            publicPath: '/dist/',
+        },
         open: true,
         watchFiles: ['src/**/*.ts', 'demo/**/*'],
     },

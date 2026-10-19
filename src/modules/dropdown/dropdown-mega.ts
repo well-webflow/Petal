@@ -1,21 +1,20 @@
 /**
  * -+-+-+ Mega Dropdown -+-+-+
  *
- * Initializes mega dropdown menus with animated background and hover interactions.
+ * Initializes mega dropdown menus with animated background and click/hover interactions.
  *
  * This function creates an interactive mega dropdown system that:
- * - Opens dropdowns on hover with a smooth animated background
+ * - Opens dropdowns on hover or click with a smooth animated background
  * - Manages only one active dropdown at a time
- * - Includes a delay before closing to improve user experience
+ * - Includes a delay before closing (hover mode) to improve user experience
+ * - Click outside to close (click mode)
  * - GSAP animations (fade, slide) support
  * - Disables on mobile devices (screens < 991px)
  */
 
 import { ATTR_PETAL_ELEMENT } from "../../lib/attributes";
-import { debug } from "../../lib/debug";
 import {
   parseDropdownConfig,
-  logConfig,
   ATTR_PETAL_DROPDOWN,
   ATTR_PETAL_DROPDOWN_TOGGLE,
   ATTR_PETAL_DROPDOWN_MENU,
@@ -23,25 +22,50 @@ import {
   ATTR_PETAL_DROPDOWN_TYPE,
   DropdownConfig,
 } from "./dropdown-config";
-import { animateIn, animateOut } from "../../lib/animations";
+import { animateIn, animateOut, clearAnimation } from "../../lib/animations";
+
+const BG_SELECTOR = `[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_DROPDOWN_BG}"]`;
+
+/**
+ * Finds the background element closest to a dropdown by walking up its ancestors
+ */
+function findBackground(dropdown: HTMLElement): HTMLElement | null {
+  let el = dropdown.parentElement;
+  while (el) {
+    const bg = el.querySelector<HTMLElement>(BG_SELECTOR);
+    if (bg) return bg;
+    el = el.parentElement;
+  }
+  return null;
+}
 
 /**
  * Initialize all mega dropdowns on the page
+ * Dropdowns are grouped by their nearest background element, so each nav works independently
  */
 export function initializeMegaDropdowns(): void {
+  const dropdowns = document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_DROPDOWN}"][${ATTR_PETAL_DROPDOWN_TYPE}="mega"]`);
+
+  const groups = new Map<HTMLElement, HTMLElement[]>();
+  dropdowns.forEach((dropdown) => {
+    const bg = findBackground(dropdown);
+    if (!bg) return;
+    const group = groups.get(bg) ?? [];
+    group.push(dropdown);
+    groups.set(bg, group);
+  });
+
+  groups.forEach((group, bg) => initializeMegaGroup(group, bg));
+}
+
+/**
+ * Initialize a group of mega dropdowns that share a background element
+ */
+function initializeMegaGroup(dropdowns: HTMLElement[], bg: HTMLElement): void {
   // Delay in milliseconds before closing dropdowns when mouse leaves
   const DELAY = 0;
   // Media query to detect mobile devices
   const isMobile = window.matchMedia("(max-width: 991px)");
-
-  // Find all mega dropdown elements and the shared background element
-  const dropdowns = document.querySelectorAll<HTMLElement>(
-    `[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_DROPDOWN}"][${ATTR_PETAL_DROPDOWN_TYPE}="mega"]`
-  );
-  const bg = document.querySelector<HTMLElement>(`[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_DROPDOWN_BG}"]`);
-
-  // Exit early if no dropdowns or background element found
-  if (!dropdowns.length || !bg) return;
 
   // Track the currently active dropdown
   let activeDropdown: Element | null = null;
@@ -49,8 +73,25 @@ export function initializeMegaDropdowns(): void {
   // Track the timeout ID for delayed closing
   let closeTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  // Initialize background height to 0
-  bg.style.height = "0px";
+  const menus = dropdowns
+    .map((dropdown) => dropdown.querySelector<HTMLElement>(`[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_DROPDOWN_MENU}"]`))
+    .filter((menu): menu is HTMLElement => menu !== null);
+
+  /**
+   * Resets all menus for the current breakpoint
+   * Desktop: menus are hidden until opened. Mobile: menu visibility is left to CSS
+   */
+  function applyBreakpoint() {
+    cancelClose();
+    activeDropdown = null;
+    activeConfig = null;
+    bg.style.height = "0px";
+
+    menus.forEach((menu) => {
+      clearAnimation(menu);
+      if (!isMobile.matches) menu.style.display = "none";
+    });
+  }
 
   /**
    * Opens a dropdown menu and animates the background to match its height
@@ -130,22 +171,55 @@ export function initializeMegaDropdowns(): void {
     const toggle = dropdown.querySelector(`[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_DROPDOWN_TOGGLE}"]`);
     const menu = dropdown.querySelector(`[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_DROPDOWN_MENU}"]`);
 
-    // Open dropdown when hovering over the toggle element
-    if (toggle) toggle.addEventListener("mouseenter", () => openDropdown(dropdown, config));
+    if (config.interaction === "hover") {
+      // HOVER MODE: Open on mouseenter
+      if (toggle) toggle.addEventListener("mouseenter", () => openDropdown(dropdown, config));
 
-    if (menu) {
-      // Cancel close when mouse enters the menu (prevents premature closing)
-      menu.addEventListener("mouseenter", cancelClose);
-      // Schedule close when mouse leaves the menu
-      menu.addEventListener("mouseleave", closeAll);
+      if (menu) {
+        // Cancel close when mouse enters the menu (prevents premature closing)
+        menu.addEventListener("mouseenter", cancelClose);
+        // Schedule close when mouse leaves the menu
+        menu.addEventListener("mouseleave", closeAll);
+      }
+
+      // Schedule close when mouse leaves the entire dropdown
+      dropdown.addEventListener("mouseleave", closeAll);
+    } else if (config.interaction === "click") {
+      // CLICK MODE: Toggle on click
+      if (toggle) {
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent event bubbling
+
+          // If this dropdown is already active, close it
+          if (activeDropdown === dropdown) {
+            if (activeConfig) closeDropdown(activeDropdown, activeConfig);
+            bg!.style.height = "0px";
+            activeDropdown = null;
+            activeConfig = null;
+          } else {
+            // Otherwise open it
+            openDropdown(dropdown, config);
+          }
+        });
+      }
+
+      // Close when clicking outside
+      document.addEventListener("click", (e) => {
+        if (activeDropdown && !activeDropdown.contains(e.target as Node) && !bg!.contains(e.target as Node)) {
+          if (activeConfig) closeDropdown(activeDropdown, activeConfig);
+          bg!.style.height = "0px";
+          activeDropdown = null;
+          activeConfig = null;
+        }
+      });
     }
-
-    // Schedule close when mouse leaves the entire dropdown
-    dropdown.addEventListener("mouseleave", closeAll);
   });
 
-  // Cancel close when mouse enters the background
+  // Background interactions (only for hover mode)
   bg.addEventListener("mouseenter", cancelClose);
-  // Schedule close when mouse leaves the background
   bg.addEventListener("mouseleave", closeAll);
+
+  // Set initial state and reset whenever the window crosses the mobile breakpoint
+  applyBreakpoint();
+  isMobile.addEventListener("change", applyBreakpoint);
 }

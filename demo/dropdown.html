@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petal Dropdown Module Demo</title>
+
+  <!-- GSAP for animations -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #667eea;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    .section {
+      margin-bottom: 60px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #333;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #667eea;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .demo-card {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 12px;
+      border: 2px solid #e9ecef;
+    }
+
+    .demo-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #764ba2;
+    }
+
+    .demo-card p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    /* Dropdown Styles */
+    [petal-el="dropdown"] {
+      position: relative;
+    }
+
+    [petal-el="dropdown-toggle"] {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    [petal-el="dropdown-toggle"]:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    [petal-el="dropdown-caret"] {
+      display: inline-block;
+      margin-left: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    [petal-el="dropdown-menu"] {
+      position: absolute;
+      top: calc(100% + 10px);
+      flex-direction: column;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      overflow: hidden;
+      z-index: 100;
+    }
+
+    [petal-el="dropdown-menu"] a,
+    [petal-el="dropdown-menu"] .menu-item {
+      display: block;
+      padding: 12px 20px;
+      color: #333;
+      text-decoration: none;
+      transition: background 0.2s;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    [petal-el="dropdown-menu"] a:last-child,
+    [petal-el="dropdown-menu"] .menu-item:last-child {
+      border-bottom: none;
+    }
+
+    [petal-el="dropdown-menu"] a:hover,
+    [petal-el="dropdown-menu"] .menu-item:hover {
+      background: #f8f9fa;
+      color: #667eea;
+    }
+
+    /* Mega Dropdown Styles */
+    .mega-nav {
+      background: #2d3748;
+      padding: 0 40px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .mega-nav-inner {
+      display: flex;
+      gap: 30px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .mega-nav [petal-el="dropdown"] {
+      position: static;
+    }
+
+    .mega-nav [petal-el="dropdown-toggle"] {
+      background: transparent;
+      padding: 20px 0;
+      border-radius: 0;
+      width: auto;
+    }
+
+    .mega-nav [petal-el="dropdown-toggle"]:hover {
+      background: transparent;
+      transform: none;
+      box-shadow: none;
+      color: #667eea;
+    }
+
+    [petal-el="dropdown-bg"] {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      overflow: hidden;
+      transition: height 0.3s ease;
+      z-index: 5;
+    }
+
+    .mega-nav [petal-el="dropdown-menu"] {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 30px 40px;
+    }
+
+    .mega-menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .mega-menu-column h4 {
+      color: #667eea;
+      font-size: 1rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .mega-menu-column a {
+      display: block;
+      padding: 8px 0;
+      color: #666;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .mega-menu-column a:hover {
+      color: #667eea;
+      padding-left: 10px;
+      background: transparent;
+    }
+
+    .feature-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #667eea;
+      color: white;
+      font-size: 0.75rem;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .code-snippet {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin-top: 15px;
+    }
+
+    .code-snippet .attr {
+      color: #9cdcfe;
+    }
+
+    .code-snippet .value {
+      color: #ce9178;
+    }
+
+    .info-box {
+      background: #e7f3ff;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .mega-menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mega-nav {
+        padding: 0 20px;
+      }
+
+      .mega-nav-inner {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌸 Petal Dropdown Module</h1>
+    <p class="subtitle">Interactive demonstration of all dropdown features and configurations</p>
+
+    <!-- SIMPLE DROPDOWNS SECTION -->
+    <section class="section">
+      <h2>Simple Dropdowns</h2>
+
+      <div class="demo-grid">
+        <!-- Click Mode (Default) -->
+        <div class="demo-card">
+          <span class="feature-badge">CLICK MODE</span>
+          <h3>Click to Toggle</h3>
+          <p>Default simple dropdown with click interaction. Click the button to open/close.</p>
+
+          <div petal-el="dropdown" petal="simple-click">
+            <button petal-el="dropdown-toggle">
+              Select Option
+              <span petal-el="dropdown-caret">▼</span>
+            </button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Dashboard</a>
+              <a href="#">Profile</a>
+              <a href="#">Settings</a>
+              <a href="#">Logout</a>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span>&gt;
+  &lt;button <span class="attr">petal-el</span>=<span class="value">"dropdown-toggle"</span>&gt;...&lt;/button&gt;
+  &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown-menu"</span>&gt;...&lt;/div&gt;
+&lt;/div&gt;
+          </div>
+        </div>
+
+        <!-- Hover Mode -->
+        <div class="demo-card">
+          <span class="feature-badge">HOVER MODE</span>
+          <h3>Hover to Open</h3>
+          <p>Simple dropdown with hover interaction. Hover over the button to reveal options.</p>
+
+          <div petal-el="dropdown" petal="simple-hover" petal-dropdown-interaction="hover">
+            <button petal-el="dropdown-toggle">
+              Hover Me
+              <span petal-el="dropdown-caret">▼</span>
+            </button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Home</a>
+              <a href="#">About</a>
+              <a href="#">Services</a>
+              <a href="#">Contact</a>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span>
+     <span class="attr">petal-dropdown-interaction</span>=<span class="value">"hover"</span>&gt;
+  ...
+&lt;/div&gt;
+          </div>
+        </div>
+
+        <!-- Slide Animation -->
+        <div class="demo-card">
+          <span class="feature-badge">SLIDE DOWN</span>
+          <h3>Slide Animation</h3>
+          <p>Dropdown with slide-down animation effect.</p>
+
+          <div petal-el="dropdown" petal="simple-slide" petal-anim="slide-down" petal-anim-duration="0.4" petal-anim-offset="20">
+            <button petal-el="dropdown-toggle">
+              Slide Down
+              <span petal-el="dropdown-caret">▼</span>
+            </button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Action 1</a>
+              <a href="#">Action 2</a>
+              <a href="#">Action 3</a>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;div <span class="attr">petal-anim</span>=<span class="value">"slide-down"</span>
+     <span class="attr">petal-anim-duration</span>=<span class="value">"0.4"</span>
+     <span class="attr">petal-anim-offset</span>=<span class="value">"20"</span>&gt;
+  ...
+&lt;/div&gt;
+          </div>
+        </div>
+
+        <!-- Bounce Animation -->
+        <div class="demo-card">
+          <span class="feature-badge">BOUNCE</span>
+          <h3>Bounce Easing</h3>
+          <p>Dropdown with playful bounce animation.</p>
+
+          <div petal-el="dropdown" petal="simple-bounce" petal-anim="slide-down" petal-anim-easing="bounce.out" petal-anim-duration="0.6">
+            <button petal-el="dropdown-toggle">
+              Bouncy
+              <span petal-el="dropdown-caret">▼</span>
+            </button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Bounce 1</a>
+              <a href="#">Bounce 2</a>
+              <a href="#">Bounce 3</a>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;div <span class="attr">petal-anim-easing</span>=<span class="value">"bounce.out"</span>
+     <span class="attr">petal-anim-duration</span>=<span class="value">"0.6"</span>&gt;
+  ...
+&lt;/div&gt;
+          </div>
+        </div>
+
+        <!-- Start Open -->
+        <div class="demo-card">
+          <span class="feature-badge">START OPEN</span>
+          <h3>Initially Open</h3>
+          <p>Dropdown that starts in the open state on page load.</p>
+
+          <div petal-el="dropdown" petal="simple-start-open" petal-dropdown-start-open="true">
+            <button petal-el="dropdown-toggle">
+              Started Open
+              <span petal-el="dropdown-caret">▼</span>
+            </button>
+            <div petal-el="dropdown-menu">
+              <a href="#">I was open!</a>
+              <a href="#">On page load</a>
+              <a href="#">Click to close</a>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;div <span class="attr">petal-dropdown-start-open</span>=<span class="value">"true"</span>&gt;
+  ...
+&lt;/div&gt;
+          </div>
+        </div>
+
+        <!-- Elastic Animation -->
+        <div class="demo-card">
+          <span class="feature-badge">ELASTIC</span>
+          <h3>Elastic Easing</h3>
+          <p>Dropdown with elastic spring animation.</p>
+
+          <div petal-el="dropdown" petal="simple-elastic" petal-anim="slide-down" petal-anim-easing="elastic.out" petal-anim-duration="0.8">
+            <button petal-el="dropdown-toggle">
+              Elastic
+              <span petal-el="dropdown-caret">▼</span>
+            </button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Spring 1</a>
+              <a href="#">Spring 2</a>
+              <a href="#">Spring 3</a>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;div <span class="attr">petal-anim-easing</span>=<span class="value">"elastic.out"</span>&gt;
+  ...
+&lt;/div&gt;
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEGA DROPDOWNS SECTION -->
+    <section class="section">
+      <h2>Mega Dropdowns</h2>
+
+      <div class="info-box">
+        <strong>Note:</strong> Mega dropdowns feature a shared animated background that adjusts to the height of the active menu. Only one mega dropdown can be open at a time.
+        <br><br>
+        <strong>Window width:</strong> Mega dropdowns only work when the window is at least 992px wide. Below that they turn off, and your CSS decides how the menus look (for example, inside a mobile nav). Widen the window to try them out.
+      </div>
+
+      <!-- Hover Mode Mega (Default) -->
+      <div style="margin-top: 30px;">
+        <span class="feature-badge">HOVER MODE</span>
+        <h3 style="margin: 10px 0;">Mega Navigation - Hover (Default)</h3>
+        <p style="margin-bottom: 20px; color: #666;">Hover over navigation items to reveal mega menus with the animated background.</p>
+
+        <nav class="mega-nav">
+          <div petal-el="dropdown-bg"></div>
+          <div class="mega-nav-inner">
+            <div petal-el="dropdown" petal-dropdown-type="mega" petal="mega-products">
+              <button petal-el="dropdown-toggle">Products</button>
+              <div petal-el="dropdown-menu">
+                <div class="mega-menu-grid">
+                  <div class="mega-menu-column">
+                    <h4>Cloud Services</h4>
+                    <a href="#">Storage Solutions</a>
+                    <a href="#">Computing Power</a>
+                    <a href="#">Database Management</a>
+                    <a href="#">API Gateway</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>Developer Tools</h4>
+                    <a href="#">CI/CD Pipeline</a>
+                    <a href="#">Code Editor</a>
+                    <a href="#">Testing Suite</a>
+                    <a href="#">Documentation</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>Analytics</h4>
+                    <a href="#">Real-time Dashboard</a>
+                    <a href="#">Custom Reports</a>
+                    <a href="#">Data Visualization</a>
+                    <a href="#">Export Tools</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div petal-el="dropdown" petal-dropdown-type="mega" petal="mega-solutions">
+              <button petal-el="dropdown-toggle">Solutions</button>
+              <div petal-el="dropdown-menu">
+                <div class="mega-menu-grid">
+                  <div class="mega-menu-column">
+                    <h4>By Industry</h4>
+                    <a href="#">E-commerce</a>
+                    <a href="#">Healthcare</a>
+                    <a href="#">Finance</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>By Use Case</h4>
+                    <a href="#">Mobile Apps</a>
+                    <a href="#">Web Applications</a>
+                    <a href="#">IoT Devices</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>Resources</h4>
+                    <a href="#">Case Studies</a>
+                    <a href="#">Whitepapers</a>
+                    <a href="#">Webinars</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div petal-el="dropdown" petal-dropdown-type="mega" petal="mega-company">
+              <button petal-el="dropdown-toggle">Company</button>
+              <div petal-el="dropdown-menu">
+                <div class="mega-menu-grid">
+                  <div class="mega-menu-column">
+                    <h4>About Us</h4>
+                    <a href="#">Our Story</a>
+                    <a href="#">Team</a>
+                    <a href="#">Careers</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>News</h4>
+                    <a href="#">Press Releases</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Events</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>Contact</h4>
+                    <a href="#">Support</a>
+                    <a href="#">Sales</a>
+                    <a href="#">Partnerships</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="code-snippet">
+&lt;nav&gt;
+  &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown-bg"</span>&gt;&lt;/div&gt;
+  &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span>
+       <span class="attr">petal-dropdown-type</span>=<span class="value">"mega"</span>&gt;
+    &lt;button <span class="attr">petal-el</span>=<span class="value">"dropdown-toggle"</span>&gt;...&lt;/button&gt;
+    &lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown-menu"</span>&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+        </div>
+      </div>
+
+      <!-- Click Mode Mega -->
+      <div style="margin-top: 50px;">
+        <span class="feature-badge">CLICK MODE</span>
+        <h3 style="margin: 10px 0;">Mega Navigation - Click</h3>
+        <p style="margin-bottom: 20px; color: #666;">Click navigation items to toggle mega menus. Click outside to close.</p>
+
+        <nav class="mega-nav">
+          <div petal-el="dropdown-bg"></div>
+          <div class="mega-nav-inner">
+            <div petal-el="dropdown" petal-dropdown-type="mega" petal-dropdown-interaction="click" petal="mega-click-features">
+              <button petal-el="dropdown-toggle">Features</button>
+              <div petal-el="dropdown-menu">
+                <div class="mega-menu-grid">
+                  <div class="mega-menu-column">
+                    <h4>Core Features</h4>
+                    <a href="#">Click to Open</a>
+                    <a href="#">Click Outside to Close</a>
+                    <a href="#">Toggle Active State</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>Advanced</h4>
+                    <a href="#">Custom Animations</a>
+                    <a href="#">Event Handlers</a>
+                    <a href="#">Configuration</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>Integration</h4>
+                    <a href="#">API Documentation</a>
+                    <a href="#">Examples</a>
+                    <a href="#">Best Practices</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div petal-el="dropdown" petal-dropdown-type="mega" petal-dropdown-interaction="click" petal="mega-click-docs" petal-anim="slide-down">
+              <button petal-el="dropdown-toggle">Documentation</button>
+              <div petal-el="dropdown-menu">
+                <div class="mega-menu-grid">
+                  <div class="mega-menu-column">
+                    <h4>Getting Started</h4>
+                    <a href="#">Installation</a>
+                    <a href="#">Quick Start</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>Guides</h4>
+                    <a href="#">Configuration</a>
+                    <a href="#">Customization</a>
+                  </div>
+                  <div class="mega-menu-column">
+                    <h4>API Reference</h4>
+                    <a href="#">Attributes</a>
+                    <a href="#">Methods</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="code-snippet">
+&lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span>
+     <span class="attr">petal-dropdown-type</span>=<span class="value">"mega"</span>
+     <span class="attr">petal-dropdown-interaction</span>=<span class="value">"click"</span>&gt;
+  ...
+&lt;/div&gt;
+        </div>
+      </div>
+    </section>
+
+    <!-- ANIMATION TYPES SECTION -->
+    <section class="section">
+      <h2>Animation Types</h2>
+
+      <div class="demo-grid">
+        <div class="demo-card">
+          <h3>Fade</h3>
+          <p>Simple opacity transition.</p>
+          <div petal-el="dropdown" petal-anim="fade">
+            <button petal-el="dropdown-toggle">Fade</button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Item 1</a>
+              <a href="#">Item 2</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <h3>Slide Up</h3>
+          <p>Slides from below.</p>
+          <div petal-el="dropdown" petal-anim="slide-up">
+            <button petal-el="dropdown-toggle">Slide Up</button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Item 1</a>
+              <a href="#">Item 2</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <h3>Slide Left</h3>
+          <p>Slides from the right.</p>
+          <div petal-el="dropdown" petal-anim="slide-left">
+            <button petal-el="dropdown-toggle">Slide Left</button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Item 1</a>
+              <a href="#">Item 2</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <h3>Slide Right</h3>
+          <p>Slides from the left.</p>
+          <div petal-el="dropdown" petal-anim="slide-right">
+            <button petal-el="dropdown-toggle">Slide Right</button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Item 1</a>
+              <a href="#">Item 2</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box" style="margin-top: 30px;">
+        <strong>Available Animations:</strong> fade, slide-up, slide-down, slide-left, slide-right, none<br>
+        <strong>Available Easings:</strong> power1-4 (in/out/inOut), back, elastic, bounce, circ, expo, sine (in/out/inOut)<br>
+        <strong>Configurable Attributes:</strong> petal-anim, petal-anim-duration, petal-anim-offset, petal-anim-easing
+      </div>
+    </section>
+  </div>
+
+  <!-- Include your compiled Petal JS -->
+  <script src="../dist/petal.js"></script>
+</body>
+</html>

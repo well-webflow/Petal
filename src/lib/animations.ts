@@ -103,6 +103,15 @@ export function animateIn(element: HTMLElement, type: AnimationType, duration: n
 }
 
 /**
+ * Stop any running animation and clear the inline styles set by animateIn/animateOut
+ */
+export function clearAnimation(element: HTMLElement): void {
+  gsap.killTweensOf(element);
+  gsap.set(element, { clearProps: "opacity,x,y" });
+  element.style.removeProperty("display");
+}
+
+/**
  * Set active state on an element
  */
 export function setActive(el: HTMLElement, active: boolean): void {
