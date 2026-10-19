@@ -12,8 +12,8 @@
 declare const Webflow: any;
 declare const Vimeo: any;
 
-import { ATTR_PETAL_POPUP, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER, ATTR_PETAL_STATE, ATTR_PETAL_TRIGGER_ANIM_OPEN, ATTR_PETAL_TRIGGER_ANIM_CLOSE, ATTR_PETAL_ELEMENT, ATTR_PETAL_POPUP_BOX, ATTR_PETAL_POPUP_OVERLAY } from "../../lib/attributes";
-import { getAllPetalElementsOfType, findClosestPetalParent, findTriggersByNameOrInParent, pauseVideo } from "../../lib/helpers";
+import { ATTR_PETAL_POPUP, ATTR_PETAL_NAME, ATTR_PETAL_STATE, ATTR_PETAL_TRIGGER_ANIM_OPEN, ATTR_PETAL_TRIGGER_ANIM_CLOSE, ATTR_PETAL_ELEMENT, ATTR_PETAL_POPUP_BOX, ATTR_PETAL_POPUP_OVERLAY } from "../../lib/attributes";
+import { getAllPetalElementsOfType, findTriggers, pauseVideo } from "../../lib/helpers";
 import { parsePopupConfig, logConfig, PopupConfig } from "./popup-config";
 import { debug, debugElements } from "../../lib/debug";
 import { storeClosedState, storeMemoryWithExpiration, checkMemory } from "../../lib/memory";
@@ -24,9 +24,9 @@ export interface PopupElements {
   popup: HTMLElement;
   box: HTMLElement | null;
   overlay: HTMLElement | null;
-  openTriggers: NodeListOf<HTMLElement>;
-  closeTriggers: NodeListOf<HTMLElement>;
-  toggleTriggers: NodeListOf<HTMLElement>;
+  openTriggers: HTMLElement[];
+  closeTriggers: HTMLElement[];
+  toggleTriggers: HTMLElement[];
 }
 
 /**
@@ -311,9 +311,9 @@ export function initializeAllPopups(): void {
     // ===========================
     // Element References
     // ===========================
-    const openTriggers = findTriggersByNameOrInParent(popup, name, "open");
-    const closeTriggers = findTriggersByNameOrInParent(popup, name, "close");
-    const toggleTriggers = findTriggersByNameOrInParent(popup, name, "toggle");
+    const openTriggers = findTriggers(popup, "open");
+    const closeTriggers = findTriggers(popup, "close");
+    const toggleTriggers = findTriggers(popup, "toggle");
 
     // Find box and overlay for default animations
     const box = popup.querySelector<HTMLElement>(`[${ATTR_PETAL_ELEMENT}="${ATTR_PETAL_POPUP_BOX}"]`);
@@ -371,23 +371,6 @@ export function initializeAllPopups(): void {
         }
       });
     });
-
-    // Find and attach close triggers without names (that are children of this popup)
-    if (!name) {
-      const allCloseTriggers = [...Array.from(document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="close"]`))];
-      allCloseTriggers.forEach((trigger) => {
-        // Check if this close trigger doesn't have a name and is a child of this popup
-        const triggerName = trigger.getAttribute(ATTR_PETAL_NAME);
-        if (!triggerName) {
-          const parentPopup = findClosestPetalParent(trigger, ATTR_PETAL_POPUP);
-          if (parentPopup === popup) {
-            trigger.addEventListener("click", () => {
-              controller.close();
-            });
-          }
-        }
-      });
-    }
 
     // ===========================
     // Auto Open

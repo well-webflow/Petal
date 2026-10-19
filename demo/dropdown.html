@@ -248,6 +248,31 @@
       font-weight: 600;
     }
 
+    .trigger-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .trigger-button {
+      padding: 8px 16px;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      background: white;
+      color: #667eea;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button.menu-item {
+      width: 100%;
+      border: none;
+      background: none;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+
     .code-snippet {
       background: #1e1e1e;
       color: #d4d4d4;
@@ -517,6 +542,37 @@
 &lt;div <span class="attr">petal-dropdown-enabled-tablet</span>=<span class="value">"false"</span>&gt;
   ...
 &lt;/div&gt;
+          </div>
+        </div>
+
+        <!-- Triggers -->
+        <div class="demo-card">
+          <span class="feature-badge">TRIGGERS</span>
+          <h3>Open, Close &amp; Toggle</h3>
+          <p>Named triggers anywhere on the page control the dropdown with that name. An unnamed close trigger closes the dropdown it's inside.</p>
+
+          <div class="trigger-buttons">
+            <button class="trigger-button" petal-trigger="open" petal="trigger-demo">Open</button>
+            <button class="trigger-button" petal-trigger="toggle" petal="trigger-demo">Toggle</button>
+          </div>
+
+          <div petal-el="dropdown" petal="trigger-demo">
+            <button petal-el="dropdown-toggle">
+              Triggers
+              <span petal-el="dropdown-caret">▼</span>
+            </button>
+            <div petal-el="dropdown-menu">
+              <a href="#">Item 1</a>
+              <a href="#">Item 2</a>
+              <button class="menu-item" petal-trigger="close">← Close</button>
+            </div>
+          </div>
+
+          <div class="code-snippet">
+&lt;button <span class="attr">petal-trigger</span>=<span class="value">"open"</span> <span class="attr">petal</span>=<span class="value">"trigger-demo"</span>&gt;
+&lt;div <span class="attr">petal-el</span>=<span class="value">"dropdown"</span> <span class="attr">petal</span>=<span class="value">"trigger-demo"</span>&gt;
+  ...
+  &lt;button <span class="attr">petal-trigger</span>=<span class="value">"close"</span>&gt;
           </div>
         </div>
       </div>

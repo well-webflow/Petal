@@ -1,4 +1,4 @@
-import { ATTR_PETAL_ELEMENT, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER, ATTR_PETAL_TRIGGER_TOGGLE } from "./attributes";
+import { ATTR_PETAL_ELEMENT, ATTR_PETAL_NAME, ATTR_PETAL_TRIGGER, ATTR_PETAL_TRIGGER_TOGGLE, ATTR_PETAL_POPUP, ATTR_PETAL_DROPDOWN } from "./attributes";
 
 export function getAllPetalElementsOfType(el: string): NodeListOf<HTMLElement> {
   return document.querySelectorAll(`[${ATTR_PETAL_ELEMENT}='${el}']`);
@@ -83,22 +83,34 @@ export function findTriggersByType(triggerType: string, name?: string | null): N
   return document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER_TOGGLE}="${triggerType}"]`);
 }
 
-/**
- * Find triggers within a parent element or by name globally
- * @param parent The parent element to search within
- * @param name The name to match globally (optional)
- * @param triggerType The type of trigger ("open" or "close")
- * @returns NodeList of matching trigger elements
- */
-export function findTriggersByNameOrInParent(parent: HTMLElement, name: string | null, triggerType: string): NodeListOf<HTMLElement> {
-  // First try to find by name globally
-  if (name) {
-    const globalMatch = document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_NAME}="${name}"][${ATTR_PETAL_TRIGGER}="${triggerType}"]`);
-    if (globalMatch && globalMatch.length > 0) return globalMatch;
-  }
+// Components that petal-trigger elements can control
+const TRIGGER_COMPONENT_SELECTOR = [ATTR_PETAL_POPUP, ATTR_PETAL_DROPDOWN].map((el) => `[${ATTR_PETAL_ELEMENT}="${el}"]`).join(", ");
 
-  // If no name match, try to find within the parent
-  return parent.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="${triggerType}"]`);
+/**
+ * Find the nearest popup or dropdown that contains an element
+ * @param element The starting element
+ * @returns The closest popup or dropdown ancestor, or null if none found
+ */
+export function findNearestTriggerComponent(element: HTMLElement): HTMLElement | null {
+  return element.parentElement?.closest<HTMLElement>(TRIGGER_COMPONENT_SELECTOR) ?? null;
+}
+
+/**
+ * Find the triggers of a type for a popup or dropdown:
+ * - Named triggers (petal="NAME") anywhere on the page that match the component's name
+ * - Unnamed triggers whose nearest popup or dropdown is this component
+ * @param component The popup or dropdown element
+ * @param triggerType The type of trigger ("open", "close" or "toggle")
+ * @returns Matching trigger elements
+ */
+export function findTriggers(component: HTMLElement, triggerType: string): HTMLElement[] {
+  const name = component.getAttribute(ATTR_PETAL_NAME);
+  const named = name ? Array.from(document.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_NAME}="${name}"][${ATTR_PETAL_TRIGGER}="${triggerType}"]`)) : [];
+  const unnamed = Array.from(component.querySelectorAll<HTMLElement>(`[${ATTR_PETAL_TRIGGER}="${triggerType}"]:not([${ATTR_PETAL_NAME}])`)).filter(
+    (trigger) => findNearestTriggerComponent(trigger) === component
+  );
+
+  return [...named, ...unnamed];
 }
 
 export function parseNumber(raw: string | null): number | undefined {

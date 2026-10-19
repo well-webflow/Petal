@@ -26,9 +26,9 @@ export function debug(debug: boolean, module: PetalModule, log: any): void {
   console.log(`🌸 [${module}] ${log}`);
 }
 
-export function debugElements(debug: boolean, module: PetalModule, name: string, elements: NodeListOf<Element> | Element | null) {
+export function debugElements(debug: boolean, module: PetalModule, name: string, elements: NodeListOf<Element> | Element[] | Element | null) {
   if (!debug) return;
-  const length = elements instanceof NodeList ? elements.length : elements ? 1 : 0;
+  const length = elements instanceof NodeList || Array.isArray(elements) ? elements.length : elements ? 1 : 0;
 
   console.log(`🌸 [${module}] Found ${length} ${name}(s)`);
   if (length > 0) console.log(elements);

@@ -7,6 +7,7 @@
  * - Caret rotation animation
  * - Start-open configuration
  * - Click outside to close (click mode)
+ * - petal-trigger open/close/toggle elements (unnamed: nearest popup or dropdown; named: matching petal name)
  * - Enabling/disabling per breakpoint (petal-dropdown-enabled, -tablet, -mobile-landscape, -mobile)
  *
  * Dropdowns inside a dropdown-group:
@@ -15,8 +16,9 @@
  * - If the group contains a dropdown-group-bg, it resizes to match the open menu
  */
 
-import { ATTR_PETAL_ELEMENT, ATTR_PETAL_STATE } from "../../lib/attributes";
+import { ATTR_PETAL_ELEMENT, ATTR_PETAL_STATE, ATTR_PETAL_TRIGGER_OPEN, ATTR_PETAL_TRIGGER_CLOSE, ATTR_PETAL_TRIGGER_TOGGLE } from "../../lib/attributes";
 import { debug, debugElements } from "../../lib/debug";
+import { findTriggers } from "../../lib/helpers";
 import { animateIn, animateOut, clearAnimation, showInstantly, hideInstantly } from "../../lib/animations";
 import { getCurrentSettingValue, onBreakpointChange } from "../../lib/setting";
 import {
@@ -43,6 +45,9 @@ export interface DropdownElements {
   toggle: HTMLElement;
   menu: HTMLElement;
   caret: HTMLElement | null;
+  openTriggers: HTMLElement[];
+  closeTriggers: HTMLElement[];
+  toggleTriggers: HTMLElement[];
 }
 
 /**
@@ -212,7 +217,8 @@ class DropdownController {
    * Add interaction listeners based on mode
    */
   bindEvents(): void {
-    const { dropdown, toggle } = this.elements;
+    const { dropdown, toggle, openTriggers, closeTriggers, toggleTriggers } = this.elements;
+    const triggers = [...openTriggers, ...closeTriggers, ...toggleTriggers];
 
     if (this.config.interaction === "hover") {
       toggle.addEventListener("mouseenter", this.open);
@@ -221,13 +227,19 @@ class DropdownController {
     } else {
       toggle.addEventListener("click", this.toggle);
 
-      // Close when clicking outside the dropdown and its group background
+      // Close when clicking outside the dropdown, its group background and its triggers
       document.addEventListener("click", (e) => {
         const target = e.target as Node;
         if (!this.isOpen() || dropdown.contains(target) || this.group?.backgroundContains(target)) return;
+        if (triggers.some((trigger) => trigger.contains(target))) return;
         this.close();
       });
     }
+
+    // petal-trigger elements work in both modes
+    openTriggers.forEach((trigger) => trigger.addEventListener("click", () => this.open()));
+    closeTriggers.forEach((trigger) => trigger.addEventListener("click", () => this.close()));
+    toggleTriggers.forEach((trigger) => trigger.addEventListener("click", () => this.toggle()));
   }
 
   /**
@@ -331,11 +343,19 @@ export function initializeAllDropdowns(): void {
     debugElements(config.debug, "DROPDOWN", "menu", menu);
     debugElements(config.debug, "DROPDOWN", "caret", caret);
 
+    const openTriggers = findTriggers(dropdown, ATTR_PETAL_TRIGGER_OPEN);
+    const closeTriggers = findTriggers(dropdown, ATTR_PETAL_TRIGGER_CLOSE);
+    const toggleTriggers = findTriggers(dropdown, ATTR_PETAL_TRIGGER_TOGGLE);
+
+    debugElements(config.debug, "DROPDOWN", "open trigger", openTriggers);
+    debugElements(config.debug, "DROPDOWN", "close trigger", closeTriggers);
+    debugElements(config.debug, "DROPDOWN", "toggle trigger", toggleTriggers);
+
     // ===========================
     // Initialization
     // ===========================
     const group = getGroup(dropdown, groups);
-    const controller = new DropdownController({ dropdown, toggle, menu, caret }, config, group);
+    const controller = new DropdownController({ dropdown, toggle, menu, caret, openTriggers, closeTriggers, toggleTriggers }, config, group);
     group?.add(controller);
 
     controller.bindEvents();
