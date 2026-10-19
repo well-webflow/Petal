@@ -272,6 +272,14 @@ class DropdownController {
 }
 
 /**
+ * Finds the first element of a type that belongs to this dropdown, skipping elements of nested dropdowns
+ */
+function getOwnElement(dropdown: HTMLElement, el: string): HTMLElement | null {
+  const matches = Array.from(dropdown.querySelectorAll<HTMLElement>(petalSelector(el)));
+  return matches.find((match) => match.closest(petalSelector(ATTR_PETAL_DROPDOWN)) === dropdown) ?? null;
+}
+
+/**
  * Finds the group for a dropdown inside a dropdown-group element, creating it on first use
  */
 function getGroup(dropdown: HTMLElement, groups: Map<HTMLElement, DropdownGroup>): DropdownGroup | null {
@@ -310,9 +318,9 @@ export function initializeAllDropdowns(): void {
     // ===========================
     // Element References
     // ===========================
-    const toggle = dropdown.querySelector<HTMLElement>(petalSelector(ATTR_PETAL_DROPDOWN_TOGGLE));
-    const menu = dropdown.querySelector<HTMLElement>(petalSelector(ATTR_PETAL_DROPDOWN_MENU));
-    const caret = dropdown.querySelector<HTMLElement>(petalSelector(ATTR_PETAL_DROPDOWN_CARET));
+    const toggle = getOwnElement(dropdown, ATTR_PETAL_DROPDOWN_TOGGLE);
+    const menu = getOwnElement(dropdown, ATTR_PETAL_DROPDOWN_MENU);
+    const caret = getOwnElement(dropdown, ATTR_PETAL_DROPDOWN_CARET);
 
     if (!toggle || !menu) {
       console.error(`[ERROR] Dropdown "${config.name}" is missing required elements. Ensure dropdown-toggle and dropdown-menu are present.`);
