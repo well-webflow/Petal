@@ -114,7 +114,7 @@ export const ATTR_PETAL_BANNER_CLOSED_CLASS = "petal-hide-nav-banner";
 export const ATTR_PETAL_DROPDOWN = "dropdown";
 export const ATTR_PETAL_DROPDOWN_TOGGLE = "dropdown-toggle";
 export const ATTR_PETAL_DROPDOWN_MENU = "dropdown-menu";
-export const ATTR_PETAL_DROPDOWN_MENU_BOX = "dropdown-drawer";
+export const ATTR_PETAL_DROPDOWN_MENU_BOX = "dropdown-box";
 
 // BEHAVIOR
 export const ATTR_PETAL_LOCK_SCROLL_ON_OPEN = "petal-lock-scroll-on-open";
