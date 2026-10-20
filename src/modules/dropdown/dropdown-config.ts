@@ -4,7 +4,7 @@
  * Handles parsing dropdown configuration from HTML attributes.
  */
 
-import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG } from "../../lib/attributes";
+import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG, ATTR_PETAL_ACTIVE_CLASS, DEFAULT_ACTIVE_CLASS } from "../../lib/attributes";
 import { parseBoolean } from "../../lib/helpers";
 import { AnimationType, EasingType } from "../../lib/animations";
 import { PetalSetting, parseSettingBreakpoint } from "../../lib/setting";
@@ -34,6 +34,7 @@ export interface DropdownConfig {
   interaction: DropdownInteraction;
   startOpen: boolean;
   enabled: PetalSetting<boolean | undefined>;
+  activeClass: string;
   animation: {
     type: AnimationType;
     duration: number;
@@ -51,6 +52,7 @@ export function parseDropdownConfig(dropdown: Element): DropdownConfig {
   const interaction = (dropdown.getAttribute(ATTR_PETAL_DROPDOWN_INTERACTION) || "click") as DropdownInteraction;
   const startOpen = parseBoolean(dropdown.getAttribute(ATTR_PETAL_DROPDOWN_START_OPEN)) ?? false;
   const enabled = parseSettingBreakpoint(dropdown, ATTR_PETAL_DROPDOWN_ENABLED, parseBoolean);
+  const activeClass = dropdown.getAttribute(ATTR_PETAL_ACTIVE_CLASS)?.trim() || DEFAULT_ACTIVE_CLASS;
 
   const animType = (dropdown.getAttribute(ATTR_PETAL_ANIM) || "fade") as AnimationType;
   const animDuration = parseFloat(dropdown.getAttribute(ATTR_PETAL_ANIM_DURATION) || "0.3");
@@ -63,6 +65,7 @@ export function parseDropdownConfig(dropdown: Element): DropdownConfig {
     interaction,
     startOpen,
     enabled,
+    activeClass,
     animation: {
       type: animType,
       duration: animDuration,

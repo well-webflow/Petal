@@ -5,6 +5,7 @@
  * - Click or hover interaction modes
  * - GSAP animations (fade, slide)
  * - Caret rotation animation
+ * - Active class on the toggle while open (petal-active-class, default: is-active)
  * - Start-open configuration
  * - Click outside to close (click mode)
  * - petal-trigger open/close/toggle elements (unnamed: nearest popup or dropdown; named: matching petal name)
@@ -252,7 +253,7 @@ class DropdownController {
 
     debug(this.config.debug, "DROPDOWN", `"${this.config.name}" ${enabled ? "enabled" : "disabled"} at ${window.innerWidth}px`);
 
-    const { menu, caret } = this.elements;
+    const { toggle, menu, caret } = this.elements;
     this.cancelClose();
     if (this.isOpen()) this.group?.deactivate(this);
     clearAnimation(menu);
@@ -269,12 +270,14 @@ class DropdownController {
       }
     } else {
       menu.removeAttribute(ATTR_PETAL_STATE);
+      toggle.classList.remove(this.config.activeClass);
       if (caret) caret.style.removeProperty("transform");
     }
   }
 
   private setState(open: boolean): void {
     this.elements.menu.setAttribute(ATTR_PETAL_STATE, open ? "open" : "closed");
+    this.elements.toggle.classList.toggle(this.config.activeClass, open);
 
     // Rotate caret if present
     if (this.elements.caret) {

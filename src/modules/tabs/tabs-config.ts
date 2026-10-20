@@ -4,7 +4,7 @@
  * Handles parsing tabs configuration from HTML attributes.
  */
 
-import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG } from "../../lib/attributes";
+import { ATTR_PETAL_NAME, ATTR_PETAL_DEBUG, ATTR_PETAL_ACTIVE_CLASS, DEFAULT_ACTIVE_CLASS } from "../../lib/attributes";
 import { parseBoolean } from "../../lib/helpers";
 import { AnimationType, EasingType } from "../../lib/animations";
 
@@ -23,6 +23,7 @@ export interface TabsConfig {
   name: string;
   debug: boolean;
   hoverEnabled: boolean;
+  activeClass: string;
   animation: {
     type: AnimationType;
     duration: number;
@@ -39,6 +40,7 @@ export function parseTabsConfig(tabsWrapper: Element): TabsConfig {
   const name = tabsWrapper.getAttribute(ATTR_PETAL_NAME) || "unknown";
   const debug = parseBoolean(tabsWrapper.getAttribute(ATTR_PETAL_DEBUG)) ?? false;
   const hoverEnabled = parseBoolean(tabsWrapper.getAttribute(ATTR_PETAL_HOVER_ENABLED)) ?? false;
+  const activeClass = tabsWrapper.getAttribute(ATTR_PETAL_ACTIVE_CLASS)?.trim() || DEFAULT_ACTIVE_CLASS;
 
   const animType = (tabsWrapper.getAttribute(ATTR_PETAL_ANIM) || "fade") as AnimationType;
   const animDuration = parseFloat(tabsWrapper.getAttribute(ATTR_PETAL_ANIM_DURATION) || "0.3");
@@ -50,6 +52,7 @@ export function parseTabsConfig(tabsWrapper: Element): TabsConfig {
     name,
     debug,
     hoverEnabled,
+    activeClass,
     animation: {
       type: animType,
       duration: animDuration,

@@ -13,6 +13,8 @@ export const ATTR_PETAL_GROUP = "petal-group"; // Group name for coordinated beh
 export const ATTR_PETAL_STATE = "petal-state";
 export const ATTR_PETAL_DEBUG = "petal-debug"; // Enable debug console logging
 export const ATTR_PETAL_VISIBLE = "petal-visible";
+export const ATTR_PETAL_ACTIVE_CLASS = "petal-active-class"; // Class added to active elements (default: "is-active")
+export const DEFAULT_ACTIVE_CLASS = "is-active";
 
 /**-------------------------*
  * ANIMATIONS
@@ -117,9 +119,7 @@ export const ATTR_PETAL_DROPDOWN_MENU = "dropdown-menu";
 export const ATTR_PETAL_DROPDOWN_MENU_BOX = "dropdown-box";
 
 // BEHAVIOR
-export const ATTR_PETAL_LOCK_SCROLL_ON_OPEN = "petal-lock-scroll-on-open";
-
-// OPEN/CLOSE BEHAVIOR
+export const ATTR_PETAL_LOCK_SCROLL_ON_OPEN = "petal-dropdown-lock-scroll";
 export const ATTR_PETAL_DROPDOWN_OPEN_ON_HOVER = "petal-dropdown-open-on-hover";
 
 // ARIA ATTRIBUTES

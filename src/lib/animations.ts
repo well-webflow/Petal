@@ -4,6 +4,9 @@
  * Shared GSAP animation utilities for consistent animations across components.
  * Supports fade and slide animations with configurable duration, offset, and easing.
  */
+
+import { ATTR_PETAL_STATE, DEFAULT_ACTIVE_CLASS } from "./attributes";
+
 declare const gsap: any;
 
 export type AnimationType = "fade" | "slide-left" | "slide-right" | "slide-up" | "slide-down" | "none";
@@ -130,12 +133,12 @@ export function hideInstantly(element: HTMLElement): void {
 /**
  * Set active state on an element
  */
-export function setActive(el: HTMLElement, active: boolean): void {
+export function setActive(el: HTMLElement, active: boolean, activeClass: string = DEFAULT_ACTIVE_CLASS): void {
   if (active) {
-    el.setAttribute("petal-state", "active");
-    el.classList.add("is-active");
+    el.setAttribute(ATTR_PETAL_STATE, "active");
+    el.classList.add(activeClass);
   } else {
-    el.setAttribute("petal-state", "inactive");
-    el.classList.remove("is-active");
+    el.setAttribute(ATTR_PETAL_STATE, "inactive");
+    el.classList.remove(activeClass);
   }
 }

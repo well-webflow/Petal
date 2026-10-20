@@ -45,18 +45,18 @@ class TabsController {
 
     const openNext = () => {
       // Update all links
-      this.elements.links.forEach((link) => setActive(link, false));
-      setActive(this.elements.links[index], true);
+      this.elements.links.forEach((link) => setActive(link, false, this.config.activeClass));
+      setActive(this.elements.links[index], true, this.config.activeClass);
 
       // Update pane
-      setActive(pane, true);
+      setActive(pane, true, this.config.activeClass);
       animateIn(pane, this.config.animation.type, this.config.animation.duration, this.config.animation.offset, this.config.animation.easing);
 
       this.isAnimating = false;
     };
 
     if (activePane) {
-      setActive(activePane, false);
+      setActive(activePane, false, this.config.activeClass);
       animateOut(
         activePane,
         this.config.animation.type,
@@ -114,7 +114,7 @@ export function initializeAllTabs(): void {
 
     // Initialize links and panes
     links.forEach((link, linkIndex) => {
-      setActive(link, linkIndex === 0);
+      setActive(link, linkIndex === 0, config.activeClass);
 
       const switchTab = () => {
         const pane = panes[linkIndex];
@@ -140,7 +140,7 @@ export function initializeAllTabs(): void {
     });
 
     panes.forEach((pane, paneIndex) => {
-      setActive(pane, paneIndex === 0);
+      setActive(pane, paneIndex === 0, config.activeClass);
       if (paneIndex !== 0) {
         pane.style.display = "none";
       }
