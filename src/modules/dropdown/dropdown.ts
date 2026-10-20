@@ -7,7 +7,7 @@
  * - Caret rotation animation
  * - Active class on the toggle while open (petal-active-class, default: is-active)
  * - Start-open configuration
- * - Click outside to close (click mode)
+ * - Click outside to close (click mode, top-level dropdowns only; nested dropdowns are hidden when their parent closes)
  * - petal-trigger open/close/toggle elements (unnamed: nearest popup or dropdown; named: matching petal name)
  * - Enabling/disabling per breakpoint (petal-dropdown-enabled, -tablet, -mobile-landscape, -mobile)
  *
@@ -229,12 +229,16 @@ class DropdownController {
       toggle.addEventListener("click", this.toggle);
 
       // Close when clicking outside the dropdown, its group background and its triggers
-      document.addEventListener("click", (e) => {
-        const target = e.target as Node;
-        if (!this.isOpen() || dropdown.contains(target) || this.group?.backgroundContains(target)) return;
-        if (triggers.some((trigger) => trigger.contains(target))) return;
-        this.close();
-      });
+      // Nested dropdowns skip this, so one that starts open isn't closed by the click that reveals it
+      const isNested = dropdown.parentElement?.closest(petalSelector(ATTR_PETAL_DROPDOWN)) != null;
+      if (!isNested) {
+        document.addEventListener("click", (e) => {
+          const target = e.target as Node;
+          if (!this.isOpen() || dropdown.contains(target) || this.group?.backgroundContains(target)) return;
+          if (triggers.some((trigger) => trigger.contains(target))) return;
+          this.close();
+        });
+      }
     }
 
     // petal-trigger elements work in both modes
