@@ -7,7 +7,7 @@
  * - Caret rotation animation
  * - Active class on the toggle while open (petal-active-class, default: is-active)
  * - Start-open configuration
- * - Click outside to close (click mode, top-level dropdowns only; nested dropdowns are hidden when their parent closes)
+ * - Click outside to close (click mode, top-level dropdowns only; dropdowns inside another dropdown or a popup are hidden when it closes)
  * - petal-trigger open/close/toggle elements (unnamed: nearest popup or dropdown; named: matching petal name)
  * - Enabling/disabling per breakpoint (petal-dropdown-enabled, -tablet, -mobile-landscape, -mobile)
  *
@@ -17,7 +17,7 @@
  * - If the group contains a dropdown-group-bg, it resizes to match the open menu
  */
 
-import { ATTR_PETAL_ELEMENT, ATTR_PETAL_STATE, ATTR_PETAL_TRIGGER_OPEN, ATTR_PETAL_TRIGGER_CLOSE, ATTR_PETAL_TRIGGER_TOGGLE } from "../../lib/attributes";
+import { ATTR_PETAL_ELEMENT, ATTR_PETAL_POPUP, ATTR_PETAL_STATE, ATTR_PETAL_TRIGGER_OPEN, ATTR_PETAL_TRIGGER_CLOSE, ATTR_PETAL_TRIGGER_TOGGLE } from "../../lib/attributes";
 import { debug, debugElements } from "../../lib/debug";
 import { findTriggers } from "../../lib/helpers";
 import { animateIn, animateOut, clearAnimation, showInstantly, hideInstantly } from "../../lib/animations";
@@ -229,8 +229,10 @@ class DropdownController {
       toggle.addEventListener("click", this.toggle);
 
       // Close when clicking outside the dropdown, its group background and its triggers
-      // Nested dropdowns skip this, so one that starts open isn't closed by the click that reveals it
-      const isNested = dropdown.parentElement?.closest(petalSelector(ATTR_PETAL_DROPDOWN)) != null;
+      // Dropdowns inside another dropdown or a popup skip this: they're hidden along with their container,
+      // and skipping it keeps one that starts open from being closed by the click that reveals it
+      const container = `${petalSelector(ATTR_PETAL_DROPDOWN)}, ${petalSelector(ATTR_PETAL_POPUP)}`;
+      const isNested = dropdown.parentElement?.closest(container) != null;
       if (!isNested) {
         document.addEventListener("click", (e) => {
           const target = e.target as Node;

@@ -35,7 +35,6 @@ export interface PopupElements {
  */
 class PopupController {
   private lastWidth: number = window.innerWidth;
-  private lastHeight: number = window.innerHeight;
   private resizeHandler: (() => void) | null = null;
   private vimeoPlayer: any = null;
 
@@ -209,17 +208,14 @@ class PopupController {
    * Setup resize handler to close popup on window dimension changes
    */
   private setupResizeHandler = (): void => {
-    // Reset tracked dimensions when setting up
+    // Reset tracked width when setting up
     this.lastWidth = window.innerWidth;
-    this.lastHeight = window.innerHeight;
 
     // Create and store the handler
+    // Only width changes close the popup: mobile browsers change the height when the address bar
+    // shows or hides on scroll, and when the on-screen keyboard opens
     this.resizeHandler = () => {
-      const currentWidth = window.innerWidth;
-      const currentHeight = window.innerHeight;
-
-      // Only close if actual dimensions changed
-      if (currentWidth !== this.lastWidth || currentHeight !== this.lastHeight) {
+      if (window.innerWidth !== this.lastWidth) {
         this.close();
       }
     };
